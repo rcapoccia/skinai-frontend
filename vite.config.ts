@@ -12,7 +12,7 @@ export default defineConfig({
   },
   define: {
     'import.meta.env.VITE_API_URL': JSON.stringify(
-      process.env.VITE_API_URL || 'http://164.90.171.42:8000'
+      process.env.VITE_API_URL || 'https://164-90-171-42.nip.io'
     ),
   },
 })
