@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import VirtualAssistant from "@/components/VirtualAssistant";
+import { api } from "@/lib/api";
 
 export default function Upload() {
   const [, setLocation] = useLocation();
@@ -22,7 +23,7 @@ export default function Upload() {
     setPhotos({ ...photos, [position]: file });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!photos.frontale || !photos.sinistro || !photos.destro) {
       toast.error("Carica tutte e 3 le foto");
       return;
@@ -33,10 +34,21 @@ export default function Upload() {
     }
     
     setLoading(true);
-    setTimeout(() => {
-      toast.success("Analisi creata con successo!");
+    
+    try {
+      // Invia foto frontale al backend per analisi AI
+      const result = await api.analyzePhoto(photos.frontale, 1);
+      
+      // Salva risultato in localStorage per Report page
+      localStorage.setItem('lastAnalysis', JSON.stringify(result));
+      
+      toast.success("Analisi completata con successo!");
       setLocation("/report");
-    }, 2000);
+    } catch (error) {
+      console.error('Errore analisi:', error);
+      toast.error("Errore durante l'analisi. Riprova.");
+      setLoading(false);
+    }
   };
 
   const photoSlots = [

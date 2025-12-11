@@ -5,57 +5,129 @@ import { Sparkles, Calendar, Droplets, Eye, Sun, Activity, Target, ArrowLeft } f
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import VirtualAssistant from "@/components/VirtualAssistant";
+import { useState, useEffect } from "react";
+import type { AnalysisResult } from "@/lib/api";
 
 export default function Report() {
   const [, setLocation] = useLocation();
+  const [analysisData, setAnalysisData] = useState<AnalysisResult | null>(null);
 
-  const analysisResults = [
-    {
-      icon: Droplets,
-      title: "Idratazione",
-      score: 85,
-      status: "Buona",
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      description: "La tua pelle mostra un buon livello di idratazione. Mantieni l'uso di sieri a base di acido ialuronico per preservare questo equilibrio."
-    },
-    {
-      icon: Eye,
-      title: "Occhiaie",
-      score: 65,
-      status: "Moderata",
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      description: "Sono presenti occhiaie di media intensità. Consigliamo un contorno occhi con caffeina e vitamina K per ridurre il gonfiore e schiarire la zona."
-    },
-    {
-      icon: Sun,
-      title: "Macchie",
-      score: 72,
-      status: "Lieve",
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
-      description: "Rilevate lievi discromie. L'uso quotidiano di vitamina C e protezione solare SPF 50+ aiuterà a prevenire e ridurre le macchie."
-    },
-    {
-      icon: Activity,
-      title: "Rughe",
-      score: 80,
-      status: "Minime",
-      color: "text-rose-600",
-      bgColor: "bg-rose-50",
-      description: "Le linee sottili sono minime. Continua con retinolo e peptidi per mantenere l'elasticità e prevenire i segni dell'età."
-    },
-    {
-      icon: Target,
-      title: "Pori",
-      score: 70,
-      status: "Normali",
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
-      description: "I pori sono di dimensione normale. Un'esfoliazione regolare con acidi BHA (salicilico) aiuterà a mantenerli puliti e minimizzati."
+  useEffect(() => {
+    // Recupera dati analisi da localStorage
+    const savedAnalysis = localStorage.getItem('lastAnalysis');
+    if (savedAnalysis) {
+      try {
+        setAnalysisData(JSON.parse(savedAnalysis));
+      } catch (e) {
+        console.error('Errore parsing analisi:', e);
+      }
     }
-  ];
+  }, []);
+
+  // Usa dati reali da API se disponibili, altrimenti fallback a mock
+  const getAnalysisResults = () => {
+    if (analysisData?.metrics) {
+      const m = analysisData.metrics;
+      return [
+        {
+          icon: Droplets,
+          title: "Idratazione",
+          score: Math.round(m.hydration_level),
+          status: m.hydration_level > 75 ? "Ottima" : m.hydration_level > 50 ? "Buona" : "Da migliorare",
+          color: "text-blue-600",
+          bgColor: "bg-blue-50",
+          description: `Livello di idratazione: ${Math.round(m.hydration_level)}%. ${m.hydration_level > 75 ? 'Ottimo risultato!' : 'Usa sieri con acido ialuronico.'}`
+        },
+        {
+          icon: Eye,
+          title: "Occhiaie",
+          score: 100 - Math.round(m.dark_circles_level),
+          status: m.dark_circles_level < 30 ? "Minime" : m.dark_circles_level < 60 ? "Moderate" : "Evidenti",
+          color: "text-purple-600",
+          bgColor: "bg-purple-50",
+          description: `Livello occhiaie: ${Math.round(m.dark_circles_level)}%. ${m.dark_circles_level > 50 ? 'Consigliato contorno occhi con caffeina.' : 'Buon risultato!'}`
+        },
+        {
+          icon: Sun,
+          title: "Macchie",
+          score: Math.max(0, 100 - Math.round(m.spots_count * 2)),
+          status: m.spots_count < 10 ? "Minime" : m.spots_count < 30 ? "Moderate" : "Evidenti",
+          color: "text-amber-600",
+          bgColor: "bg-amber-50",
+          description: `Macchie rilevate: ${Math.round(m.spots_count)}. ${m.spots_count > 20 ? 'Usa vitamina C e SPF 50+.' : 'Continua con la protezione solare.'}`
+        },
+        {
+          icon: Activity,
+          title: "Rughe",
+          score: 100 - Math.round(m.wrinkles_level),
+          status: m.wrinkles_level < 25 ? "Minime" : m.wrinkles_level < 50 ? "Moderate" : "Evidenti",
+          color: "text-rose-600",
+          bgColor: "bg-rose-50",
+          description: `Livello rughe: ${Math.round(m.wrinkles_level)}%. ${m.wrinkles_level > 40 ? 'Consigliato retinolo e peptidi.' : 'Ottimo risultato!'}`
+        },
+        {
+          icon: Target,
+          title: "Pori",
+          score: 100 - Math.round(m.pores_visibility),
+          status: m.pores_visibility < 30 ? "Minimizzati" : m.pores_visibility < 60 ? "Normali" : "Dilatati",
+          color: "text-emerald-600",
+          bgColor: "bg-emerald-50",
+          description: `Visibilità pori: ${Math.round(m.pores_visibility)}%. ${m.pores_visibility > 50 ? 'Esfoliazione con acidi BHA consigliata.' : 'Buon risultato!'}`
+        }
+      ];
+    }
+    
+    // Fallback a dati mock se API non disponibile
+    return [
+      {
+        icon: Droplets,
+        title: "Idratazione",
+        score: 85,
+        status: "Buona",
+        color: "text-blue-600",
+        bgColor: "bg-blue-50",
+        description: "La tua pelle mostra un buon livello di idratazione. Mantieni l'uso di sieri a base di acido ialuronico per preservare questo equilibrio."
+      },
+      {
+        icon: Eye,
+        title: "Occhiaie",
+        score: 65,
+        status: "Moderata",
+        color: "text-purple-600",
+        bgColor: "bg-purple-50",
+        description: "Sono presenti occhiaie di media intensità. Consigliamo un contorno occhi con caffeina e vitamina K per ridurre il gonfiore e schiarire la zona."
+      },
+      {
+        icon: Sun,
+        title: "Macchie",
+        score: 72,
+        status: "Lieve",
+        color: "text-amber-600",
+        bgColor: "bg-amber-50",
+        description: "Rilevate lievi discromie. L'uso quotidiano di vitamina C e protezione solare SPF 50+ aiuterà a prevenire e ridurre le macchie."
+      },
+      {
+        icon: Activity,
+        title: "Rughe",
+        score: 80,
+        status: "Minime",
+        color: "text-rose-600",
+        bgColor: "bg-rose-50",
+        description: "Le linee sottili sono minime. Continua con retinolo e peptidi per mantenere l'elasticità e prevenire i segni dell'età."
+      },
+      {
+        icon: Target,
+        title: "Pori",
+        score: 70,
+        status: "Normali",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-50",
+        description: "I pori sono di dimensione normale. Un'esfoliazione regolare con acidi BHA (salicilico) aiuterà a mantenerli puliti e minimizzati."
+      }
+    ];
+  };
+
+  const analysisResults = getAnalysisResults();
 
   const colorPalette = [
     { hex: "#D1A78C", name: "Nude Pesca" },
