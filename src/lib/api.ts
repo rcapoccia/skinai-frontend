@@ -93,7 +93,7 @@ export const api = {
   /**
    * Alias per compatibilità con codice esistente
    */
-  analyzeImage: async (formData: FormData, token?: string): Promise<AnalysisResult> => {
+  analyzeImage: async (formData: FormData, _token?: string): Promise<AnalysisResult> => {
     const file = formData.get('file') as File;
     if (!file) throw new Error('Nessun file fornito');
     return api.analyzePhoto(file, 1);
@@ -125,7 +125,7 @@ export const api = {
   /**
    * Login (mock - backend attuale non ha auth)
    */
-  login: async (data: { email: string; password: string }): Promise<{ token: string; user_id: number }> => {
+  login: async (_data: { email: string; password: string }): Promise<{ token: string; user_id: number }> => {
     // Mock login - ritorna sempre successo
     return {
       token: 'mock-token',
@@ -136,7 +136,7 @@ export const api = {
   /**
    * Submit questionario (mock)
    */
-  submitQuestionnaire: async (data: any, token?: string): Promise<{ success: boolean }> => {
+  submitQuestionnaire: async (data: any, _token?: string): Promise<{ success: boolean }> => {
     // Mock - il backend attuale non ha endpoint questionario
     console.log('Questionario salvato (mock):', data);
     return { success: true };
@@ -145,7 +145,7 @@ export const api = {
   /**
    * Aggiungi entry diario (mock)
    */
-  addDiaryEntry: async (data: any, token?: string): Promise<{ success: boolean }> => {
+  addDiaryEntry: async (data: any, _token?: string): Promise<{ success: boolean }> => {
     // Mock - il backend attuale salva automaticamente nel diario dopo analisi
     console.log('Diario entry salvata (mock):', data);
     return { success: true };
