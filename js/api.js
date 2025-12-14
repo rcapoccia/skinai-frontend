@@ -64,6 +64,11 @@ class SkinAIAPI {
       
       if (!response.ok) {
         const error = await response.json();
+        // Handle validation errors
+        if (Array.isArray(error.detail)) {
+          const messages = error.detail.map(e => e.msg).join(', ');
+          throw new Error(messages);
+        }
         throw new Error(error.detail || 'Registration failed');
       }
       
@@ -88,6 +93,10 @@ class SkinAIAPI {
       
       if (!response.ok) {
         const error = await response.json();
+        if (Array.isArray(error.detail)) {
+          const messages = error.detail.map(e => e.msg).join(', ');
+          throw new Error(messages);
+        }
         throw new Error(error.detail || 'Login failed');
       }
       
