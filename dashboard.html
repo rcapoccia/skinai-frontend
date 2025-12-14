@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .dashboard-header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem 0;
+    }
+    
+    .dashboard-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--gray-700);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    
+    .dashboard-main {
+      min-height: calc(100vh - 5rem);
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+    }
+    
+    .welcome-section {
+      margin-bottom: 3rem;
+    }
+    
+    .welcome-section h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-bar {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    
+    .progress-line {
+      position: absolute;
+      top: 1.5rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e5e7eb;
+      z-index: 0;
+    }
+    
+    .progress-line-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 66%;
+      transition: width 0.5s ease;
+    }
+    
+    .progress-step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      flex: 1;
+    }
+    
+    .step-circle {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.5rem;
+      font-weight: 700;
+      color: var(--gray-600);
+    }
+    
+    .step-circle.completed {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .step-label {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .metric-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .metric-circle {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .metric-label {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-bottom: 0.25rem;
+    }
+    
+    .metric-value {
+      font-size: 0.75rem;
+      color: var(--gray-700);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <nav class="dashboard-nav">
+      <img src="images/logo.png" alt="SkinAI" style="height: 2.5rem;">
+      <div class="nav-links">
+        <a href="profilo.html">Profilo</a>
+        <a href="faq.html">FAQ</a>
+        <a href="index.html">Esci</a>
+      </div>
+    </nav>
+  </header>
+  
+  <main class="dashboard-main">
+    <div class="container">
+      <div class="welcome-section">
+        <h1>Benvenuta, Maria!</h1>
+        <p style="font-size: 1.125rem; color: var(--gray-600);">
+          Ecco il tuo percorso verso una pelle perfetta
+        </p>
+      </div>
+      
+      <div class="progress-bar">
+        <h3 style="margin-bottom: 1.5rem; color: var(--dark);">Il tuo progresso</h3>
+        <div class="progress-steps">
+          <div class="progress-line">
+            <div class="progress-line-fill"></div>
+          </div>
+          
+          <div class="progress-step">
+            <div class="step-circle completed">✓</div>
+            <div class="step-label">Questionario</div>
+          </div>
+          
+          <div class="progress-step">
+            <div class="step-circle completed">✓</div>
+            <div class="step-label">Foto</div>
+          </div>
+          
+          <div class="progress-step">
+            <div class="step-circle">3</div>
+            <div class="step-label">Analisi</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom: 0.75rem;">Visualizza Report</h3>
+          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+            Consulta la tua analisi completa della pelle e i consigli personalizzati
+          </p>
+          <a href="report.html" class="btn btn-primary" style="width: 100%;">Apri Report</a>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom: 0.75rem;">Diario della Pelle</h3>
+          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+            Traccia i tuoi progressi giornalieri e annota come si sente la tua pelle
+          </p>
+          <a href="diario.html" class="btn btn-outline" style="width: 100%;">Apri Diario</a>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <h3 style="margin-bottom: 0.75rem;">Nuova Analisi</h3>
+          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+            Ripeti l'analisi per monitorare i miglioramenti della tua pelle
+          </p>
+          <a href="questionario.html" class="btn btn-outline" style="width: 100%;">Inizia</a>
+        </div>
+      </div>
+      
+      <div style="background: white; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);">
+        <h3 style="margin-bottom: 1.5rem; color: var(--dark);">Panoramica Analisi</h3>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-circle" style="background: #3b82f6;">85%</div>
+            <div class="metric-label">Idratazione</div>
+            <div class="metric-value">Ottima</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-circle" style="background: #8b5cf6;">30%</div>
+            <div class="metric-label">Occhiaie</div>
+            <div class="metric-value">Bassa</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-circle" style="background: #eab308;">45%</div>
+            <div class="metric-label">Macchie</div>
+            <div class="metric-value">Media</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-circle" style="background: #f97316;">25%</div>
+            <div class="metric-label">Rughe</div>
+            <div class="metric-value">Bassa</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-circle" style="background: #10b981;">70%</div>
+            <div class="metric-label">Pori</div>
+            <div class="metric-value">Normali</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carica Foto - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .upload-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+    }
+    
+    .upload-card {
+      max-width: 56rem;
+      margin: 0 auto;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      padding: 3rem 2rem;
+    }
+    
+    .upload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    
+    .upload-zone {
+      border: 3px dashed #d1d5db;
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+      position: relative;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .upload-zone:hover {
+      border-color: var(--primary);
+      background: white;
+    }
+    
+    .upload-zone.has-image {
+      border-style: solid;
+      border-color: var(--primary);
+      padding: 0;
+    }
+    
+    .upload-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      color: var(--gray-600);
+    }
+    
+    .upload-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      display: none;
+    }
+    
+    .upload-zone.has-image .upload-preview {
+      display: block;
+    }
+    
+    .upload-zone.has-image .upload-placeholder {
+      display: none;
+    }
+    
+    .upload-label {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-hint {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .remove-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .upload-zone.has-image .remove-btn {
+      display: flex;
+    }
+    
+    .tips-section {
+      background: rgba(209, 167, 140, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .tips-title {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .tips-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .tips-list li {
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      color: var(--gray-700);
+    }
+    
+    .tips-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    
+    .analyzing {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .analyzing.active {
+      display: block;
+    }
+    
+    .spinner {
+      width: 4rem;
+      height: 4rem;
+      border: 4px solid #e5e7eb;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-container">
+    <div class="upload-card">
+      <div class="text-center mb-8">
+        <img src="images/logo.png" alt="SkinAI" style="height: 3rem; margin-bottom: 1rem;">
+        <h1 style="font-size: 2rem;">Carica le tue foto</h1>
+        <p style="color: var(--gray-600);">
+          Scatta 3 foto del tuo viso per un'analisi completa
+        </p>
+      </div>
+      
+      <div class="tips-section">
+        <div class="tips-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          Consigli per foto ottimali
+        </div>
+        <ul class="tips-list">
+          <li>Scatta in un ambiente ben illuminato con luce naturale</li>
+          <li>Rimuovi trucco e accessori dal viso</li>
+          <li>Mantieni un'espressione neutra</li>
+          <li>Assicurati che il viso sia completamente visibile</li>
+          <li>Evita ombre sul viso</li>
+        </ul>
+      </div>
+      
+      <div id="upload-section">
+        <div class="upload-grid">
+          <!-- Frontale -->
+          <div class="upload-zone" onclick="document.getElementById('file-front').click()">
+            <div class="upload-placeholder">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <div class="upload-label">Foto Frontale</div>
+              <div class="upload-hint">Clicca per caricare</div>
+            </div>
+            <img class="upload-preview" id="preview-front" alt="Preview frontale">
+            <button class="remove-btn" onclick="removeImage(event, 'front')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <input type="file" id="file-front" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'front')">
+          </div>
+          
+          <!-- Laterale Sinistra -->
+          <div class="upload-zone" onclick="document.getElementById('file-left').click()">
+            <div class="upload-placeholder">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <div class="upload-label">Laterale Sinistra</div>
+              <div class="upload-hint">Clicca per caricare</div>
+            </div>
+            <img class="upload-preview" id="preview-left" alt="Preview sinistra">
+            <button class="remove-btn" onclick="removeImage(event, 'left')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <input type="file" id="file-left" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'left')">
+          </div>
+          
+          <!-- Laterale Destra -->
+          <div class="upload-zone" onclick="document.getElementById('file-right').click()">
+            <div class="upload-placeholder">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <div class="upload-label">Laterale Destra</div>
+              <div class="upload-hint">Clicca per caricare</div>
+            </div>
+            <img class="upload-preview" id="preview-right" alt="Preview destra">
+            <button class="remove-btn" onclick="removeImage(event, 'right')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <input type="file" id="file-right" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'right')">
+          </div>
+        </div>
+        
+        <div class="text-center mt-8">
+          <button class="btn btn-primary" style="padding: 1rem 3rem;" onclick="startAnalysis()" id="analyze-btn" disabled>
+            Avvia Analisi
+          </button>
+        </div>
+      </div>
+      
+      <div class="analyzing" id="analyzing-section">
+        <div class="spinner"></div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--dark);">
+          Analisi in corso...
+        </h2>
+        <p style="color: var(--gray-600);">
+          La nostra AI sta analizzando le tue foto. Questo potrebbe richiedere alcuni secondi.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const uploadedFiles = {
+      front: null,
+      left: null,
+      right: null
+    };
+    
+    function handleFileSelect(event, position) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        uploadedFiles[position] = file;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById(`preview-${position}`);
+          preview.src = e.target.result;
+          preview.parentElement.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+        
+        checkAllUploaded();
+      }
+    }
+    
+    function removeImage(event, position) {
+      event.stopPropagation();
+      uploadedFiles[position] = null;
+      
+      const zone = document.getElementById(`preview-${position}`).parentElement;
+      zone.classList.remove('has-image');
+      document.getElementById(`preview-${position}`).src = '';
+      document.getElementById(`file-${position}`).value = '';
+      
+      checkAllUploaded();
+    }
+    
+    function checkAllUploaded() {
+      const allUploaded = uploadedFiles.front && uploadedFiles.left && uploadedFiles.right;
+      document.getElementById('analyze-btn').disabled = !allUploaded;
+    }
+    
+    function startAnalysis() {
+      // Hide upload section
+      document.getElementById('upload-section').style.display = 'none';
+      
+      // Show analyzing section
+      document.getElementById('analyzing-section').classList.add('active');
+      
+      // Simulate analysis (TODO: integrate with backend API)
+      setTimeout(() => {
+        window.location.href = 'report.html';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionario - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .questionnaire-container {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+    }
+    
+    .questionnaire-card {
+      max-width: 42rem;
+      margin: 0 auto;
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      padding: 3rem 2rem;
+    }
+    
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    .progress-dot {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--gray-600);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .progress-dot.active {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .progress-dot.completed {
+      background: var(--tertiary);
+      color: white;
+    }
+    
+    .step-content {
+      display: none;
+    }
+    
+    .step-content.active {
+      display: block;
+    }
+    
+    .question-title {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+    
+    .question-subtitle {
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+    }
+    
+    .options-grid {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .option-card {
+      padding: 1.25rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    
+    .option-card:hover {
+      border-color: var(--primary);
+      background: #fafafa;
+    }
+    
+    .option-card.selected {
+      border-color: var(--primary);
+      background: rgba(209, 167, 140, 0.1);
+    }
+    
+    .option-card input[type="radio"],
+    .option-card input[type="checkbox"] {
+      margin-right: 0.75rem;
+    }
+    
+    .option-label {
+      font-weight: 500;
+      color: var(--dark);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    
+    .option-description {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .navigation-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .btn-back {
+      flex: 1;
+      padding: 0.75rem 2rem;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      border-radius: 9999px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+      background: #fafafa;
+    }
+    
+    .btn-next {
+      flex: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="questionnaire-container">
+    <div class="questionnaire-card">
+      <div class="text-center mb-8">
+        <img src="images/logo.png" alt="SkinAI" style="height: 3rem; margin-bottom: 1rem;">
+        <h1 style="font-size: 2rem;">Questionario Pelle</h1>
+        <p style="color: var(--gray-600);">Aiutaci a conoscerti meglio per un'analisi personalizzata</p>
+      </div>
+      
+      <div class="progress-indicator">
+        <div class="progress-dot active" id="dot-1">1</div>
+        <div class="progress-dot" id="dot-2">2</div>
+        <div class="progress-dot" id="dot-3">3</div>
+        <div class="progress-dot" id="dot-4">4</div>
+        <div class="progress-dot" id="dot-5">5</div>
+        <div class="progress-dot" id="dot-6">6</div>
+      </div>
+      
+      <!-- Step 1 -->
+      <div class="step-content active" id="step-1">
+        <h2 class="question-title">Qual è il tuo tipo di pelle?</h2>
+        <p class="question-subtitle">Seleziona quello che descrive meglio la tua pelle</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="radio" name="skin-type" value="normal">
+            <div>
+              <span class="option-label">Normale</span>
+              <p class="option-description">Equilibrata, non troppo grassa né secca</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="skin-type" value="dry">
+            <div>
+              <span class="option-label">Secca</span>
+              <p class="option-description">Tende a tirare, può essere ruvida o squamosa</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="skin-type" value="oily">
+            <div>
+              <span class="option-label">Grassa</span>
+              <p class="option-description">Lucida, pori dilatati, tendenza all'acne</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="skin-type" value="combination">
+            <div>
+              <span class="option-label">Mista</span>
+              <p class="option-description">Zona T grassa, guance normali o secche</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="skin-type" value="sensitive">
+            <div>
+              <span class="option-label">Sensibile</span>
+              <p class="option-description">Si irrita facilmente, rossori frequenti</p>
+            </div>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+        </div>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="step-content" id="step-2">
+        <h2 class="question-title">Quali sono le tue preoccupazioni principali?</h2>
+        <p class="question-subtitle">Puoi selezionare più opzioni</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="acne">
+            <span class="option-label">Acne e imperfezioni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="wrinkles">
+            <span class="option-label">Rughe e linee sottili</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="dark-spots">
+            <span class="option-label">Macchie scure</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="dark-circles">
+            <span class="option-label">Occhiaie</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="pores">
+            <span class="option-label">Pori dilatati</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="checkbox" name="concerns" value="dryness">
+            <span class="option-label">Secchezza</span>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn-back" onclick="prevStep()">Indietro</button>
+          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+        </div>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="step-content" id="step-3">
+        <h2 class="question-title">Quanti anni hai?</h2>
+        <p class="question-subtitle">L'età aiuta a personalizzare i consigli</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="radio" name="age" value="18-25">
+            <span class="option-label">18-25 anni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="age" value="26-35">
+            <span class="option-label">26-35 anni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="age" value="36-45">
+            <span class="option-label">36-45 anni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="age" value="46-55">
+            <span class="option-label">46-55 anni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="age" value="56+">
+            <span class="option-label">56+ anni</span>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn-back" onclick="prevStep()">Indietro</button>
+          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+        </div>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="step-content" id="step-4">
+        <h2 class="question-title">Hai una routine skincare?</h2>
+        <p class="question-subtitle">Descrivici la tua routine attuale</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="radio" name="routine" value="none">
+            <div>
+              <span class="option-label">Nessuna routine</span>
+              <p class="option-description">Non uso prodotti specifici</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="routine" value="basic">
+            <div>
+              <span class="option-label">Base</span>
+              <p class="option-description">Detergente e crema idratante</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="routine" value="intermediate">
+            <div>
+              <span class="option-label">Intermedia</span>
+              <p class="option-description">Detergente, tonico, siero, crema</p>
+            </div>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="routine" value="advanced">
+            <div>
+              <span class="option-label">Avanzata</span>
+              <p class="option-description">Routine completa multi-step</p>
+            </div>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn-back" onclick="prevStep()">Indietro</button>
+          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+        </div>
+      </div>
+      
+      <!-- Step 5 -->
+      <div class="step-content" id="step-5">
+        <h2 class="question-title">Usi la protezione solare?</h2>
+        <p class="question-subtitle">La protezione solare è fondamentale</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="radio" name="sunscreen" value="daily">
+            <span class="option-label">Ogni giorno</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="sunscreen" value="sometimes">
+            <span class="option-label">Qualche volta</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="sunscreen" value="summer">
+            <span class="option-label">Solo d'estate</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="sunscreen" value="never">
+            <span class="option-label">Mai</span>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn-back" onclick="prevStep()">Indietro</button>
+          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+        </div>
+      </div>
+      
+      <!-- Step 6 -->
+      <div class="step-content" id="step-6">
+        <h2 class="question-title">Qual è il tuo obiettivo principale?</h2>
+        <p class="question-subtitle">Cosa vorresti migliorare?</p>
+        
+        <div class="options-grid">
+          <label class="option-card">
+            <input type="radio" name="goal" value="hydration">
+            <span class="option-label">Idratazione profonda</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="goal" value="anti-aging">
+            <span class="option-label">Anti-età e rassodamento</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="goal" value="brightness">
+            <span class="option-label">Luminosità e uniformità</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="goal" value="acne">
+            <span class="option-label">Ridurre acne e imperfezioni</span>
+          </label>
+          
+          <label class="option-card">
+            <input type="radio" name="goal" value="sensitivity">
+            <span class="option-label">Calmare la pelle sensibile</span>
+          </label>
+        </div>
+        
+        <div class="navigation-buttons">
+          <button class="btn-back" onclick="prevStep()">Indietro</button>
+          <button class="btn btn-primary btn-next" onclick="completeQuestionnaire()">Completa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentStep = 1;
+    const totalSteps = 6;
+    
+    // Add click handlers to option cards
+    document.querySelectorAll('.option-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const input = this.querySelector('input');
+        if (input.type === 'radio') {
+          // Remove selected class from siblings
+          this.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+          this.classList.add('selected');
+        } else {
+          this.classList.toggle('selected');
+        }
+      });
+    });
+    
+    function nextStep() {
+      if (currentStep < totalSteps) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`dot-${currentStep}`).classList.remove('active');
+        document.getElementById(`dot-${currentStep}`).classList.add('completed');
+        
+        currentStep++;
+        
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        document.getElementById(`dot-${currentStep}`).classList.add('active');
+      }
+    }
+    
+    function prevStep() {
+      if (currentStep > 1) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`dot-${currentStep}`).classList.remove('active');
+        
+        currentStep--;
+        
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        document.getElementById(`dot-${currentStep}`).classList.remove('completed');
+        document.getElementById(`dot-${currentStep}`).classList.add('active');
+      }
+    }
+    
+    function completeQuestionnaire() {
+      // TODO: Save questionnaire data
+      alert('Questionario completato! Procedi al caricamento delle foto.');
+      window.location.href = 'upload.html';
+    }
+  </script>
+</body>
+</html>
