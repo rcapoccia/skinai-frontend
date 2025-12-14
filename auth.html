@@ -263,17 +263,49 @@
       document.getElementById(tab + '-form').classList.add('active');
     }
     
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
-      // TODO: Implement login logic
-      alert('Login funzionalità da implementare');
-      window.location.href = 'dashboard.html';
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const btn = e.target.querySelector('button[type="submit"]');
+      
+      btn.disabled = true;
+      btn.textContent = 'Accesso in corso...';
+      
+      try {
+        await api.login(email, password);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Errore login: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = 'Accedi';
+      }
     }
     
-    function handleRegister(e) {
+    async function handleRegister(e) {
       e.preventDefault();
-      // TODO: Implement register logic
-      alert('Registrazione funzionalità da implementare');
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const btn = e.target.querySelector('button[type="submit"]');
+      
+      btn.disabled = true;
+      btn.textContent = 'Registrazione in corso...';
+      
+      try {
+        await api.register(email, password, name);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert('Errore registrazione: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = 'Crea account';
+      }
+    }
+    
+    // Redirect if already logged in
+    if (api.isAuthenticated()) {
       window.location.href = 'dashboard.html';
     }
   </script>
