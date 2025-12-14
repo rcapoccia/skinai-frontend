@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .faq-header {
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      color: white;
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    
+    .faq-main {
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+      min-height: 100vh;
+    }
+    
+    .faq-search {
+      max-width: 36rem;
+      margin: -2rem auto 3rem;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: none;
+      border-radius: 9999px;
+      font-size: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-600);
+    }
+    
+    .faq-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .category-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .category-icon {
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 1rem;
+      color: var(--primary);
+    }
+    
+    .faq-list {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+    
+    .faq-item {
+      background: white;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .faq-question {
+      width: 100%;
+      padding: 1.5rem;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    
+    .faq-question:hover {
+      background: #fafafa;
+    }
+    
+    .faq-icon {
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+    
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+    
+    .faq-answer-content {
+      padding: 0 1.5rem 1.5rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    
+    .contact-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      text-align: center;
+      margin-top: 3rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="faq-header">
+    <div class="container">
+      <img src="images/logo.png" alt="SkinAI" style="height: 3rem; margin-bottom: 1rem; filter: brightness(0) invert(1);">
+      <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">Domande Frequenti</h1>
+      <p style="font-size: 1.125rem; opacity: 0.9;">
+        Trova risposte alle domande più comuni su SkinAI
+      </p>
+    </div>
+  </header>
+  
+  <main class="faq-main">
+    <div class="container">
+      <!-- Search -->
+      <div class="faq-search">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Cerca una domanda..."
+          oninput="searchFAQ(this.value)"
+        >
+      </div>
+      
+      <!-- Categories -->
+      <div class="faq-categories">
+        <div class="category-card">
+          <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <h3 style="color: var(--dark); margin-bottom: 0.5rem;">Generale</h3>
+          <p style="font-size: 0.875rem; color: var(--gray-600);">Cos'è SkinAI e come funziona</p>
+        </div>
+        
+        <div class="category-card">
+          <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <h3 style="color: var(--dark); margin-bottom: 0.5rem;">Analisi</h3>
+          <p style="font-size: 0.875rem; color: var(--gray-600);">Caricamento foto e risultati</p>
+        </div>
+        
+        <div class="category-card">
+          <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <h3 style="color: var(--dark); margin-bottom: 0.5rem;">Routine</h3>
+          <p style="font-size: 0.875rem; color: var(--gray-600);">Consigli e prodotti</p>
+        </div>
+        
+        <div class="category-card">
+          <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <h3 style="color: var(--dark); margin-bottom: 0.5rem;">Privacy</h3>
+          <p style="font-size: 0.875rem; color: var(--gray-600);">Sicurezza dei dati</p>
+        </div>
+      </div>
+      
+      <!-- FAQ List -->
+      <div class="faq-list" id="faq-list">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem; color: var(--dark); text-align: center;">
+          Tutte le Domande
+        </h2>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Cos'è SkinAI?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              SkinAI è una piattaforma di analisi della pelle basata su intelligenza artificiale. Attraverso l'analisi di foto del tuo viso, forniamo consigli personalizzati per la cura della pelle, routine skincare su misura e suggerimenti di armocromia.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Come funziona l'analisi AI?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              La nostra AI analizza le tue foto utilizzando algoritmi avanzati di computer vision per identificare caratteristiche come tipo di pelle, livello di idratazione, presenza di macchie, rughe, pori dilatati e altre imperfezioni. I risultati vengono poi elaborati per creare una routine personalizzata.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Quante foto devo caricare?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Ti chiediamo di caricare 3 foto: una frontale e due laterali (destra e sinistra). Questo ci permette di analizzare la tua pelle da diverse angolazioni per un'analisi più completa e accurata.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Le mie foto sono al sicuro?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Assolutamente sì. Le tue foto vengono crittografate e archiviate in modo sicuro. Utilizziamo le tue immagini esclusivamente per l'analisi della pelle e non le condividiamo mai con terze parti. Puoi eliminare le tue foto in qualsiasi momento dal tuo profilo.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Quanto è accurata l'analisi?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              La nostra AI è stata addestrata su migliaia di immagini e ha un'accuratezza superiore al 90% nell'identificazione delle caratteristiche della pelle. Tuttavia, per problemi dermatologici specifici, consigliamo sempre di consultare un dermatologo professionista.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Posso ripetere l'analisi?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Sì! Puoi ripetere l'analisi ogni volta che vuoi per monitorare i progressi della tua pelle nel tempo. Ti consigliamo di fare una nuova analisi ogni 4-6 settimane per vedere i miglioramenti.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>I prodotti consigliati sono sponsorizzati?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              No, i nostri consigli sono completamente imparziali. Suggeriamo tipologie di prodotti e ingredienti attivi basandoci esclusivamente sulla tua analisi, non su partnership commerciali.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Cos'è l'armocromia?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              L'armocromia è l'analisi dei colori che meglio si adattano al tuo incarnato, sottotono e caratteristiche naturali. Ti aiutiamo a scoprire quali tonalità di make-up valorizzano al meglio la tua bellezza naturale.
+            </div>
+          </div>
+        </div>
+        
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFAQ(this)">
+            <span>Posso cancellare il mio account?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-content">
+              Sì, puoi eliminare il tuo account in qualsiasi momento dalla pagina Profilo. Tutti i tuoi dati, comprese le foto, verranno cancellati permanentemente dai nostri server.
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contact Card -->
+      <div class="contact-card">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem; color: var(--dark);">
+          Non hai trovato la risposta?
+        </h2>
+        <p style="color: var(--gray-600); margin-bottom: 2rem;">
+          Il nostro team è qui per aiutarti. Contattaci e ti risponderemo al più presto.
+        </p>
+        <a href="mailto:support@skinai.it" class="btn btn-primary" style="padding: 1rem 3rem;">
+          Contattaci
+        </a>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    function toggleFAQ(button) {
+      const item = button.parentElement;
+      const isActive = item.classList.contains('active');
+      
+      // Close all items
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+      
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    }
+    
+    function searchFAQ(query) {
+      const items = document.querySelectorAll('.faq-item');
+      const lowerQuery = query.toLowerCase();
+      
+      items.forEach(item => {
+        const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+        const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+        
+        if (question.includes(lowerQuery) || answer.includes(lowerQuery)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

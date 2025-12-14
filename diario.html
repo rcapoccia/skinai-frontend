@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diario - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .diary-header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem 0;
+    }
+    
+    .diary-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .diary-main {
+      min-height: calc(100vh - 5rem);
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+    }
+    
+    .add-entry-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mood-selector {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      justify-content: center;
+    }
+    
+    .mood-btn {
+      width: 4rem;
+      height: 4rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 50%;
+      background: white;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .mood-btn:hover {
+      transform: scale(1.1);
+      border-color: var(--primary);
+    }
+    
+    .mood-btn.selected {
+      border-color: var(--primary);
+      background: rgba(209, 167, 140, 0.1);
+    }
+    
+    .entry-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      margin-bottom: 1rem;
+    }
+    
+    .entry-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .timeline {
+      position: relative;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 2rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e5e7eb;
+    }
+    
+    .timeline-entry {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      margin-left: 4.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: -3.25rem;
+      top: 2rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px #e5e7eb;
+    }
+    
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .entry-date {
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .entry-mood {
+      font-size: 1.5rem;
+    }
+    
+    .entry-content {
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+      .timeline::before {
+        left: 1rem;
+      }
+      
+      .timeline-entry {
+        margin-left: 3rem;
+      }
+      
+      .timeline-dot {
+        left: -2.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="diary-header">
+    <nav class="diary-nav">
+      <img src="images/logo.png" alt="SkinAI" style="height: 2.5rem;">
+      <a href="dashboard.html" style="text-decoration: none; color: var(--primary); font-weight: 500;">
+        ← Dashboard
+      </a>
+    </nav>
+  </header>
+  
+  <main class="diary-main">
+    <div class="container" style="max-width: 48rem;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">Diario della Pelle</h1>
+      <p style="color: var(--gray-600); margin-bottom: 3rem;">
+        Traccia i tuoi progressi e annota come si sente la tua pelle ogni giorno
+      </p>
+      
+      <!-- Add New Entry -->
+      <div class="add-entry-card">
+        <h3 style="color: var(--dark); margin-bottom: 1rem;">Nuova Annotazione</h3>
+        
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--dark);">
+          Come si sente la tua pelle oggi?
+        </label>
+        <div class="mood-selector">
+          <button class="mood-btn" data-mood="amazing" title="Fantastica">🤩</button>
+          <button class="mood-btn" data-mood="good" title="Bene">😊</button>
+          <button class="mood-btn" data-mood="okay" title="Così così">😐</button>
+          <button class="mood-btn" data-mood="bad" title="Male">😟</button>
+          <button class="mood-btn" data-mood="terrible" title="Pessima">😢</button>
+        </div>
+        
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--dark);">
+          Note (opzionale)
+        </label>
+        <textarea 
+          class="entry-textarea" 
+          id="entry-note"
+          placeholder="Es: Oggi la pelle è più luminosa. Ho dormito bene e bevuto molta acqua..."
+        ></textarea>
+        
+        <button class="btn btn-primary" onclick="addEntry()" style="width: 100%;">
+          Salva Annotazione
+        </button>
+      </div>
+      
+      <!-- Timeline -->
+      <h3 style="color: var(--dark); margin-bottom: 2rem; font-size: 1.5rem;">Storico</h3>
+      <div class="timeline" id="timeline">
+        <!-- Entry 1 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot"></div>
+          <div class="entry-header">
+            <div class="entry-date">Oggi, 13 Dicembre 2024</div>
+            <div class="entry-mood">😊</div>
+          </div>
+          <div class="entry-content">
+            Pelle più luminosa dopo aver seguito la routine per una settimana. I pori sembrano meno visibili!
+          </div>
+        </div>
+        
+        <!-- Entry 2 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot"></div>
+          <div class="entry-header">
+            <div class="entry-date">10 Dicembre 2024</div>
+            <div class="entry-mood">😐</div>
+          </div>
+          <div class="entry-content">
+            Un po' di rossore sulla zona T. Forse ho esagerato con l'esfoliante ieri sera.
+          </div>
+        </div>
+        
+        <!-- Entry 3 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot"></div>
+          <div class="entry-header">
+            <div class="entry-date">7 Dicembre 2024</div>
+            <div class="entry-mood">🤩</div>
+          </div>
+          <div class="entry-content">
+            Prima settimana completata! La pelle si sente più idratata e morbida. Continuo così!
+          </div>
+        </div>
+        
+        <!-- Entry 4 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot"></div>
+          <div class="entry-header">
+            <div class="entry-date">5 Dicembre 2024</div>
+            <div class="entry-mood">😊</div>
+          </div>
+          <div class="entry-content">
+            Iniziato a usare il siero vitamina C. Pelle leggermente più luminosa già dopo 2 giorni.
+          </div>
+        </div>
+        
+        <!-- Entry 5 -->
+        <div class="timeline-entry">
+          <div class="timeline-dot"></div>
+          <div class="entry-header">
+            <div class="entry-date">3 Dicembre 2024</div>
+            <div class="entry-mood">😐</div>
+          </div>
+          <div class="entry-content">
+            Primo giorno con la nuova routine. La pelle si sente pulita ma un po' secca. Devo aumentare l'idratazione.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Mood selector
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+    
+    function addEntry() {
+      const selectedMood = document.querySelector('.mood-btn.selected');
+      const note = document.getElementById('entry-note').value;
+      
+      if (!selectedMood) {
+        alert('Seleziona come si sente la tua pelle oggi');
+        return;
+      }
+      
+      // TODO: Save to backend
+      alert('Annotazione salvata!');
+      
+      // Reset form
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('entry-note').value = '';
+    }
+  </script>
+</body>
+</html>

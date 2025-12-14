@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profilo - SkinAI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <style>
+    .profile-header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem 0;
+    }
+    
+    .profile-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .profile-main {
+      min-height: calc(100vh - 5rem);
+      background: linear-gradient(135deg, var(--secondary), var(--light));
+      padding: 3rem 1rem;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .avatar {
+      width: 8rem;
+      height: 8rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+      margin: 0 auto 1rem;
+      font-weight: 700;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .danger-zone {
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 9999px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <header class="profile-header">
+    <nav class="profile-nav">
+      <img src="images/logo.png" alt="SkinAI" style="height: 2.5rem;">
+      <a href="dashboard.html" style="text-decoration: none; color: var(--primary); font-weight: 500;">
+        ← Dashboard
+      </a>
+    </nav>
+  </header>
+  
+  <main class="profile-main">
+    <div class="container" style="max-width: 56rem;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--dark);">Profilo</h1>
+      <p style="color: var(--gray-600); margin-bottom: 3rem;">
+        Gestisci le tue informazioni personali e le preferenze dell'account
+      </p>
+      
+      <!-- Personal Info -->
+      <div class="profile-card">
+        <div class="avatar-section">
+          <div class="avatar">MR</div>
+          <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem; color: var(--dark);">Maria Rossi</h2>
+          <p style="color: var(--gray-600);">maria.rossi@esempio.it</p>
+        </div>
+        
+        <h3 class="section-title">Informazioni Personali</h3>
+        
+        <form onsubmit="saveProfile(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="first-name">Nome</label>
+              <input type="text" id="first-name" class="form-input" value="Maria" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="last-name">Cognome</label>
+              <input type="text" id="last-name" class="form-input" value="Rossi" required>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" class="form-input" value="maria.rossi@esempio.it" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Telefono (opzionale)</label>
+              <input type="tel" id="phone" class="form-input" placeholder="+39 123 456 7890">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="birthdate">Data di nascita</label>
+            <input type="date" id="birthdate" class="form-input" value="1990-05-15">
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+            Salva Modifiche
+          </button>
+        </form>
+      </div>
+      
+      <!-- Skin Profile -->
+      <div class="profile-card">
+        <h3 class="section-title">Profilo Pelle</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="skin-type">Tipo di Pelle</label>
+            <select id="skin-type" class="form-input">
+              <option value="normal">Normale</option>
+              <option value="dry">Secca</option>
+              <option value="oily">Grassa</option>
+              <option value="combination" selected>Mista</option>
+              <option value="sensitive">Sensibile</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="skin-tone">Tonalità Pelle</label>
+            <select id="skin-tone" class="form-input">
+              <option value="fair">Chiara</option>
+              <option value="light">Chiara-Media</option>
+              <option value="medium" selected>Media</option>
+              <option value="olive">Olivastra</option>
+              <option value="tan">Abbronzata</option>
+              <option value="dark">Scura</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Preoccupazioni Principali</label>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" checked> Macchie scure
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox"> Rughe
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" checked> Pori dilatati
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox"> Acne
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox" checked> Occhiaie
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <input type="checkbox"> Secchezza
+            </label>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" style="margin-top: 1rem;">
+          Aggiorna Profilo Pelle
+        </button>
+      </div>
+      
+      <!-- Password Change -->
+      <div class="profile-card">
+        <h3 class="section-title">Sicurezza</h3>
+        
+        <form onsubmit="changePassword(event)">
+          <div class="form-group">
+            <label for="current-password">Password Attuale</label>
+            <input type="password" id="current-password" class="form-input" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="new-password">Nuova Password</label>
+              <input type="password" id="new-password" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="confirm-password">Conferma Password</label>
+              <input type="password" id="confirm-password" class="form-input" required>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            Cambia Password
+          </button>
+        </form>
+      </div>
+      
+      <!-- Danger Zone -->
+      <div class="profile-card">
+        <h3 class="section-title" style="color: #dc2626;">Zona Pericolosa</h3>
+        
+        <div class="danger-zone">
+          <h4 style="color: #991b1b; margin-bottom: 0.5rem;">Elimina Account</h4>
+          <p style="color: #7f1d1d; font-size: 0.875rem; margin-bottom: 1rem;">
+            Una volta eliminato, il tuo account non potrà essere recuperato. Tutti i dati verranno cancellati permanentemente.
+          </p>
+          <button class="btn-danger" onclick="deleteAccount()">
+            Elimina il mio account
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    function saveProfile(e) {
+      e.preventDefault();
+      // TODO: Save to backend
+      alert('Profilo aggiornato con successo!');
+    }
+    
+    function changePassword(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('new-password').value;
+      const confirmPass = document.getElementById('confirm-password').value;
+      
+      if (newPass !== confirmPass) {
+        alert('Le password non coincidono!');
+        return;
+      }
+      
+      // TODO: Save to backend
+      alert('Password cambiata con successo!');
+    }
+    
+    function deleteAccount() {
+      if (confirm('Sei sicura di voler eliminare il tuo account? Questa azione è irreversibile.')) {
+        // TODO: Delete account
+        alert('Account eliminato');
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>
