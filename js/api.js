@@ -143,7 +143,8 @@ class SkinAIAPI {
   
   async submitQuestionnaire(data) {
     try {
-      const response = await fetch(`${this.baseURL}/api/questionnaire/submit`, {
+      // CORRETTO: era /api/questionnaire/submit, ora è /questionnaire
+      const response = await fetch(`${this.baseURL}/questionnaire`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
@@ -163,7 +164,8 @@ class SkinAIAPI {
   
   async getQuestionnaire() {
     try {
-      const response = await fetch(`${this.baseURL}/api/questionnaire/me`, {
+      // CORRETTO: era /api/questionnaire/me, ora è /questionnaire/me
+      const response = await fetch(`${this.baseURL}/questionnaire/me`, {
         headers: this.getHeaders()
       });
       
@@ -187,7 +189,8 @@ class SkinAIAPI {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch(`${this.baseURL}/api/sam/analyze-photo`, {
+      // CORRETTO: era /api/sam/analyze-photo, ora è /analyze
+      const response = await fetch(`${this.baseURL}/analyze`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.token}`
