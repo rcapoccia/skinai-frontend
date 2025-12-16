@@ -372,6 +372,43 @@
             <h1 class="form-title">La Tua Pelle</h1>
             <p class="form-subtitle">Aiutaci a capire meglio la tua pelle per un'analisi personalizzata</p>
           </div>
+          
+          <!-- Età -->
+          <div class="question-group">
+            <div class="question-label">Qual è la tua fascia d'età? <button class="help-btn" onclick="showHelp('eta')">?</button></div>
+            <div class="pill-options">
+              <div class="pill-option"><input type="radio" name="age_range" id="age1" value="under18"><label for="age1">Sotto i 18</label></div>
+              <div class="pill-option"><input type="radio" name="age_range" id="age2" value="18-25"><label for="age2">18-25</label></div>
+              <div class="pill-option"><input type="radio" name="age_range" id="age3" value="26-35"><label for="age3">26-35</label></div>
+              <div class="pill-option"><input type="radio" name="age_range" id="age4" value="36-45"><label for="age4">36-45</label></div>
+              <div class="pill-option"><input type="radio" name="age_range" id="age5" value="46-55"><label for="age5">46-55</label></div>
+              <div class="pill-option"><input type="radio" name="age_range" id="age6" value="over55"><label for="age6">Oltre 55</label></div>
+            </div>
+          </div>
+          
+          <!-- Allergie -->
+          <div class="question-group">
+            <div class="question-label">Hai allergie o intolleranze a ingredienti cosmetici? <button class="help-btn" onclick="showHelp('allergie')">?</button></div>
+            <div class="pill-options" style="margin-bottom: 1rem;">
+              <div class="pill-option"><input type="radio" name="has_allergies" id="allergy_no" value="no" onchange="toggleAllergyDetails()"><label for="allergy_no">No, nessuna</label></div>
+              <div class="pill-option"><input type="radio" name="has_allergies" id="allergy_yes" value="yes" onchange="toggleAllergyDetails()"><label for="allergy_yes">Sì, ho allergie</label></div>
+            </div>
+            <div id="allergy-details" style="display: none;">
+              <div class="checkbox-grid" style="margin-bottom: 1rem;">
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all1" value="profumi"><label for="all1">Profumi/Fragranze</label></div>
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all2" value="parabeni"><label for="all2">Parabeni</label></div>
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all3" value="nichel"><label for="all3">Nichel</label></div>
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all4" value="siliconi"><label for="all4">Siliconi</label></div>
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all5" value="alcool"><label for="all5">Alcool</label></div>
+                <div class="checkbox-option"><input type="checkbox" name="allergies" id="all6" value="oli_essenziali"><label for="all6">Oli essenziali</label></div>
+              </div>
+              <div style="margin-top: 0.5rem;">
+                <label style="font-size: 0.9rem; color: var(--gray-600); display: block; margin-bottom: 0.5rem;">Altre allergie (specifica):</label>
+                <input type="text" id="other_allergies" placeholder="Es: lattice, lanolina..." style="width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--gray-200); border-radius: 12px; font-size: 0.95rem;">
+              </div>
+            </div>
+          </div>
+          
           <div class="question-group">
             <div class="question-label">Come si comporta la tua pelle durante il giorno? <button class="help-btn" onclick="showHelp('comportamento')">?</button></div>
             <div class="pill-options">
@@ -569,14 +606,28 @@
       } catch (e) { console.log('[SkinAI] No previous questionnaire found'); }
     }
     loadPreviousData();
+    function toggleAllergyDetails() {
+      const hasAllergies = document.querySelector('input[name="has_allergies"]:checked')?.value;
+      const detailsDiv = document.getElementById('allergy-details');
+      if (hasAllergies === 'yes') {
+        detailsDiv.style.display = 'block';
+      } else {
+        detailsDiv.style.display = 'none';
+      }
+    }
+    
     function validateSection(sectionNum) {
       let errors = [];
       
       if (sectionNum === 1) {
+        const ageRange = document.querySelector('input[name="age_range"]:checked');
+        const hasAllergies = document.querySelector('input[name="has_allergies"]:checked');
         const skinBehavior = document.querySelector('input[name="skin_behavior"]:checked');
         const morningSkin = document.querySelector('input[name="morning_skin"]:checked');
         const afterCleansing = document.querySelector('input[name="after_cleansing"]:checked');
         
+        if (!ageRange) errors.push('Fascia d\'età');
+        if (!hasAllergies) errors.push('Allergie o intolleranze');
         if (!skinBehavior) errors.push('Come si comporta la tua pelle durante il giorno');
         if (!morningSkin) errors.push('Come è la tua pelle al mattino');
         if (!afterCleansing) errors.push('Come reagisce la pelle dopo la detersione');
@@ -636,6 +687,10 @@
     }
     function collectFormData() {
       return {
+        age_range: document.querySelector('input[name="age_range"]:checked')?.value || '',
+        has_allergies: document.querySelector('input[name="has_allergies"]:checked')?.value || 'no',
+        allergies: Array.from(document.querySelectorAll('input[name="allergies"]:checked')).map(el => el.value),
+        other_allergies: document.getElementById('other_allergies')?.value || '',
         skin_behavior: document.querySelector('input[name="skin_behavior"]:checked')?.value || '',
         morning_skin: document.querySelector('input[name="morning_skin"]:checked')?.value || '',
         after_cleansing: document.querySelector('input[name="after_cleansing"]:checked')?.value || '',
