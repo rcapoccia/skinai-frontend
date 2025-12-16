@@ -263,10 +263,10 @@ class SkinAIAPI {
       }
       
       const formData = new FormData();
-      // Il backend richiede un array di foto con campo 'photos'
-      formData.append('photos', file);
+      // Il backend richiede un singolo file con campo 'file'
+      formData.append('file', file);
       
-      const response = await fetch(`${this.baseURL}/analyze`, {
+      const response = await fetch(`${this.baseURL}/sam/analyze-photo`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.token}`
