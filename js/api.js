@@ -164,7 +164,6 @@ class SkinAIAPI {
   
   async getQuestionnaire() {
     try {
-      // CORRETTO: era /api/questionnaire/me, ora è /questionnaire/me
       const response = await fetch(`${this.baseURL}/questionnaire/me`, {
         headers: this.getHeaders()
       });
@@ -177,6 +176,42 @@ class SkinAIAPI {
     } catch (error) {
       console.error('Get questionnaire error:', error);
       return null;
+    }
+  }
+  
+  async getLastQuestionnaire() {
+    try {
+      const response = await fetch(`${this.baseURL}/questionnaire/last`, {
+        headers: this.getHeaders()
+      });
+      
+      if (!response.ok) {
+        return null;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Get last questionnaire error:', error);
+      return null;
+    }
+  }
+  
+  async askAssistant(question, context) {
+    try {
+      const response = await fetch(`${this.baseURL}/assistant`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ question, context })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to get assistant response');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Ask assistant error:', error);
+      throw error;
     }
   }
   
@@ -218,6 +253,40 @@ class SkinAIAPI {
   getLatestAnalysis() {
     const analysisStr = localStorage.getItem('skinai_latest_analysis');
     return analysisStr ? JSON.parse(analysisStr) : null;
+  }
+  
+  async getAnalyses() {
+    try {
+      const response = await fetch(`${this.baseURL}/analyses`, {
+        headers: this.getHeaders()
+      });
+      
+      if (!response.ok) {
+        return [];
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Get analyses error:', error);
+      return [];
+    }
+  }
+  
+  async getAnalysis(id) {
+    try {
+      const response = await fetch(`${this.baseURL}/analyses/${id}`, {
+        headers: this.getHeaders()
+      });
+      
+      if (!response.ok) {
+        return null;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Get analysis error:', error);
+      return null;
+    }
   }
   
   // ============================================================================

@@ -16,47 +16,60 @@
     .questionnaire-container {
       min-height: 100vh;
       background: linear-gradient(135deg, var(--secondary), var(--light));
-      padding: 3rem 1rem;
+      padding: 2rem 1rem;
     }
     
     .questionnaire-card {
-      max-width: 42rem;
+      max-width: 800px;
       margin: 0 auto;
       background: white;
       border-radius: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-      padding: 3rem 2rem;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     }
     
-    .progress-indicator {
+    .progress-bar {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 3rem;
-      position: relative;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     .progress-dot {
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 3rem;
+      height: 3rem;
       border-radius: 50%;
-      background: #e5e7eb;
+      background: var(--secondary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      color: var(--gray-600);
-      position: relative;
-      z-index: 1;
+      font-weight: 600;
+      color: var(--dark);
+      transition: all 0.3s;
     }
     
     .progress-dot.active {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--tertiary));
       color: white;
+      transform: scale(1.1);
     }
     
     .progress-dot.completed {
       background: var(--tertiary);
       color: white;
+    }
+    
+    .progress-label {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      text-align: center;
     }
     
     .step-content {
@@ -65,376 +78,674 @@
     
     .step-content.active {
       display: block;
+      animation: fadeIn 0.3s ease;
     }
     
-    .question-title {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .section-title {
       font-size: 1.75rem;
       margin-bottom: 0.5rem;
       color: var(--dark);
     }
     
-    .question-subtitle {
+    .section-subtitle {
       color: var(--gray-600);
       margin-bottom: 2rem;
     }
     
-    .options-grid {
-      display: grid;
-      gap: 1rem;
-      margin-bottom: 2rem;
+    .form-group {
+      margin-bottom: 1.5rem;
     }
     
-    .option-card {
-      padding: 1.25rem;
-      border: 2px solid #e5e7eb;
-      border-radius: 1rem;
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+    }
+    
+    .help-btn {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: var(--secondary);
+      border: none;
+      color: var(--dark);
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s;
+    }
+    
+    .help-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .form-select, .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--secondary);
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      transition: all 0.2s;
       background: white;
     }
     
-    .option-card:hover {
+    .form-select:focus, .form-input:focus {
+      outline: none;
       border-color: var(--primary);
-      background: #fafafa;
+      box-shadow: 0 0 0 3px rgba(209, 167, 140, 0.2);
     }
     
-    .option-card.selected {
+    .radio-group, .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    
+    .radio-option, .checkbox-option {
+      position: relative;
+    }
+    
+    .radio-option input, .checkbox-option input {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .radio-option label, .checkbox-option label {
+      display: block;
+      padding: 1rem;
+      border: 2px solid var(--secondary);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    
+    .radio-option input:checked + label,
+    .checkbox-option input:checked + label {
       border-color: var(--primary);
       background: rgba(209, 167, 140, 0.1);
     }
     
-    .option-card input[type="radio"],
-    .option-card input[type="checkbox"] {
-      margin-right: 0.75rem;
+    .radio-option label:hover,
+    .checkbox-option label:hover {
+      border-color: var(--tertiary);
     }
     
-    .option-label {
-      font-weight: 500;
-      color: var(--dark);
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-    
-    .option-description {
-      font-size: 0.875rem;
-      color: var(--gray-600);
-    }
-    
-    .navigation-buttons {
+    .btn-group {
       display: flex;
-      gap: 1rem;
+      justify-content: space-between;
       margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--secondary);
     }
     
     .btn-back {
-      flex: 1;
-      padding: 0.75rem 2rem;
-      border: 2px solid var(--primary);
-      background: white;
-      color: var(--primary);
-      border-radius: 9999px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      background: transparent;
+      color: var(--dark);
+      border: 2px solid var(--secondary);
     }
     
     .btn-back:hover {
-      background: #fafafa;
+      border-color: var(--primary);
     }
     
-    .btn-next {
-      flex: 2;
+    /* Assistant Modal */
+    .assistant-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
+    .assistant-modal.active {
+      display: flex;
+    }
+    
+    .assistant-content {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .assistant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .assistant-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray-600);
+    }
+    
+    .assistant-answer {
+      background: var(--light);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      line-height: 1.6;
+    }
+    
+    .assistant-loading {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-600);
+    }
+    
+    .spinner {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid var(--secondary);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
-  <link rel="stylesheet" href="css/assistant.css">
 </head>
 <body>
+  <!-- Header -->
+  <header style="background: white; padding: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html">
+        <img src="images/logo.png" alt="SkinAI" style="height: 40px;">
+      </a>
+      <a href="dashboard.html" style="color: var(--dark); text-decoration: none;">← Torna alla Dashboard</a>
+    </div>
+  </header>
+
   <div class="questionnaire-container">
     <div class="questionnaire-card">
-      <div class="text-center mb-8">
-        <img src="images/logo.png" alt="SkinAI" style="height: 3rem; margin-bottom: 1rem;">
-        <h1 style="font-size: 2rem;">Questionario Pelle</h1>
-        <p style="color: var(--gray-600);">Aiutaci a conoscerti meglio per un'analisi personalizzata</p>
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-step">
+          <div class="progress-dot active" id="dot-1">1</div>
+          <span class="progress-label">La Tua Pelle</span>
+        </div>
+        <div class="progress-step">
+          <div class="progress-dot" id="dot-2">2</div>
+          <span class="progress-label">I Tuoi Colori</span>
+        </div>
+        <div class="progress-step">
+          <div class="progress-dot" id="dot-3">3</div>
+          <span class="progress-label">Make-up</span>
+        </div>
       </div>
-      
-      <div class="progress-indicator">
-        <div class="progress-dot active" id="dot-1">1</div>
-        <div class="progress-dot" id="dot-2">2</div>
-        <div class="progress-dot" id="dot-3">3</div>
-        <div class="progress-dot" id="dot-4">4</div>
-        <div class="progress-dot" id="dot-5">5</div>
-        <div class="progress-dot" id="dot-6">6</div>
-      </div>
-      
-      <!-- Step 1 -->
+
+      <!-- Step 1: Skincare -->
       <div class="step-content active" id="step-1">
-        <h2 class="question-title">Qual è il tuo tipo di pelle?</h2>
-        <p class="question-subtitle">Seleziona quello che descrive meglio la tua pelle</p>
+        <h2 class="section-title">La Tua Pelle</h2>
+        <p class="section-subtitle">Aiutaci a capire meglio la tua pelle per un'analisi personalizzata</p>
         
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="skin-type" value="normal">
-            <div>
-              <span class="option-label">Normale</span>
-              <p class="option-description">Equilibrata, non troppo grassa né secca</p>
-            </div>
+        <div class="form-group">
+          <label class="form-label">
+            Come si comporta la tua pelle durante il giorno?
+            <button class="help-btn" onclick="askAssistant('Come capisco se la mia pelle è grassa, secca o mista durante il giorno?', 'comportamento pelle')">?</button>
           </label>
-          
-          <label class="option-card">
-            <input type="radio" name="skin-type" value="dry">
-            <div>
-              <span class="option-label">Secca</span>
-              <p class="option-description">Tende a tirare, può essere ruvida o squamosa</p>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="skin_behavior" id="skin_lucida" value="lucida">
+              <label for="skin_lucida">Tende a lucidarsi</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="skin-type" value="oily">
-            <div>
-              <span class="option-label">Grassa</span>
-              <p class="option-description">Lucida, pori dilatati, tendenza all'acne</p>
+            <div class="radio-option">
+              <input type="radio" name="skin_behavior" id="skin_secca" value="secca">
+              <label for="skin_secca">Si secca</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="skin-type" value="combination">
-            <div>
-              <span class="option-label">Mista</span>
-              <p class="option-description">Zona T grassa, guance normali o secche</p>
+            <div class="radio-option">
+              <input type="radio" name="skin_behavior" id="skin_normale" value="normale">
+              <label for="skin_normale">Rimane normale</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="skin-type" value="sensitive">
-            <div>
-              <span class="option-label">Sensibile</span>
-              <p class="option-description">Si irrita facilmente, rossori frequenti</p>
+            <div class="radio-option">
+              <input type="radio" name="skin_behavior" id="skin_zone" value="a_zone">
+              <label for="skin_zone">A zone (mista)</label>
             </div>
-          </label>
+          </div>
         </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+
+        <div class="form-group">
+          <label class="form-label">
+            Com'è la tua pelle al mattino appena sveglia?
+            <button class="help-btn" onclick="askAssistant('Come dovrei valutare la mia pelle al mattino?', 'pelle mattino')">?</button>
+          </label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="morning_skin" id="morning_lucida" value="lucida">
+              <label for="morning_lucida">Lucida</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="morning_skin" id="morning_secca" value="secca">
+              <label for="morning_secca">Secca</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="morning_skin" id="morning_normale" value="normale">
+              <label for="morning_normale">Normale</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="morning_skin" id="morning_zone" value="a_zone">
+              <label for="morning_zone">A zone</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Dopo la detersione, come reagisce la pelle?
+            <button class="help-btn" onclick="askAssistant('Cosa significa se la pelle tira dopo la detersione?', 'reazione detersione')">?</button>
+          </label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="after_cleansing" id="cleansing_tira" value="tira">
+              <label for="cleansing_tira">Tira o brucia</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="after_cleansing" id="cleansing_arrossa" value="arrossa">
+              <label for="cleansing_arrossa">Si arrossa</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="after_cleansing" id="cleansing_nessuna" value="nessuna">
+              <label for="cleansing_nessuna">Nessuna reazione</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Hai la pelle sensibile o condizioni diagnosticate?
+          </label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="sensitive_skin" id="sensitive_si" value="si_diagnosticata">
+              <label for="sensitive_si">Sì, diagnosticata</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="sensitive_skin" id="sensitive_forse" value="forse">
+              <label for="sensitive_forse">Forse</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="sensitive_skin" id="sensitive_no" value="no">
+              <label for="sensitive_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Quali problematiche noti sulla tua pelle? (seleziona tutte quelle applicabili)
+            <button class="help-btn" onclick="askAssistant('Come riconosco le diverse problematiche della pelle?', 'problematiche pelle')">?</button>
+          </label>
+          <div class="checkbox-group">
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_acne" value="acne">
+              <label for="concern_acne">Acne / Brufoli</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_macchie" value="macchie">
+              <label for="concern_macchie">Macchie scure</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_rughe" value="rughe">
+              <label for="concern_rughe">Rughe / Linee</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_pori" value="pori">
+              <label for="concern_pori">Pori dilatati</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_rossori" value="rossori">
+              <label for="concern_rossori">Rossori</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_secchezza" value="secchezza">
+              <label for="concern_secchezza">Secchezza</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_lucidita" value="lucidita">
+              <label for="concern_lucidita">Lucidità eccessiva</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="concern_nessuna" value="nessuna">
+              <label for="concern_nessuna">Nessuna particolare</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Quanta acqua bevi al giorno?</label>
+          <select class="form-select" name="water_intake" id="water_intake">
+            <option value="">Seleziona...</option>
+            <option value="meno_1l">Meno di 1 litro</option>
+            <option value="1_2l">1-2 litri</option>
+            <option value="piu_2l">Più di 2 litri</option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <div></div>
+          <button class="btn btn-primary" onclick="nextStep()">Continua →</button>
         </div>
       </div>
-      
-      <!-- Step 2 -->
+
+      <!-- Step 2: Armocromia -->
       <div class="step-content" id="step-2">
-        <h2 class="question-title">Quali sono le tue preoccupazioni principali?</h2>
-        <p class="question-subtitle">Puoi selezionare più opzioni</p>
+        <h2 class="section-title">I Tuoi Colori</h2>
+        <p class="section-subtitle">Queste informazioni ci aiutano a determinare la tua armocromia</p>
         
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="acne">
-            <span class="option-label">Acne e imperfezioni</span>
+        <div class="form-group">
+          <label class="form-label">
+            Qual è il colore naturale dei tuoi capelli?
+            <button class="help-btn" onclick="askAssistant('Come capisco il mio colore naturale di capelli se li tingo?', 'colore capelli')">?</button>
           </label>
-          
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="wrinkles">
-            <span class="option-label">Rughe e linee sottili</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="dark-spots">
-            <span class="option-label">Macchie scure</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="dark-circles">
-            <span class="option-label">Occhiaie</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="pores">
-            <span class="option-label">Pori dilatati</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="checkbox" name="concerns" value="dryness">
-            <span class="option-label">Secchezza</span>
-          </label>
+          <select class="form-select" name="hair_color" id="hair_color">
+            <option value="">Seleziona...</option>
+            <option value="biondo_chiaro">Biondi chiari, platino, cenere</option>
+            <option value="castano_chiaro_freddo">Castano chiaro freddo/cenere</option>
+            <option value="castano_medio_caldo">Castano medio caldo, ramato</option>
+            <option value="castano_scuro_nero">Castano scuro o nero</option>
+            <option value="rossi">Rossi naturali</option>
+          </select>
         </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn-back" onclick="prevStep()">Indietro</button>
-          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+
+        <div class="form-group">
+          <label class="form-label">
+            Qual è il colore naturale della tua pelle?
+            <button class="help-btn" onclick="askAssistant('Come determino il colore naturale della mia pelle?', 'colore pelle')">?</button>
+          </label>
+          <select class="form-select" name="skin_color" id="skin_color">
+            <option value="">Seleziona...</option>
+            <option value="molto_chiara">Molto chiara, porcellana</option>
+            <option value="chiara_rosata">Chiara rosata o neutra</option>
+            <option value="beige_dorato">Beige dorato o olivastro</option>
+            <option value="media_calda">Media calda (miele, ambrata)</option>
+            <option value="scura_dorata">Scura dorata</option>
+            <option value="scura_fredda">Scura fredda</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Qual è il colore dei tuoi occhi?</label>
+          <select class="form-select" name="eye_color" id="eye_color">
+            <option value="">Seleziona...</option>
+            <option value="azzurri">Azzurri o grigio-azzurri</option>
+            <option value="verdi">Verdi o nocciola chiaro</option>
+            <option value="castani_caldi">Castani caldi</option>
+            <option value="castani_scuri">Castani scuri/neutri</option>
+            <option value="neri">Neri/marrone profondo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Come reagisce la tua pelle al sole?
+            <button class="help-btn" onclick="askAssistant('Perché la reazione al sole è importante per l\'armocromia?', 'reazione sole')">?</button>
+          </label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="sun_reaction" id="sun_scotto" value="scotto">
+              <label for="sun_scotto">Mi scotto e divento rossa</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="sun_reaction" id="sun_lento" value="abbronzo_lento">
+              <label for="sun_lento">Abbronzo lentamente</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="sun_reaction" id="sun_dorata" value="abbronzo_dorata">
+              <label for="sun_dorata">Abbronzo dorata/ambrata</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="sun_reaction" id="sun_scura" value="molto_scura">
+              <label for="sun_scura">Non mi scotto mai</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Di che colore sono le vene del tuo polso?
+            <button class="help-btn" onclick="askAssistant('Come faccio a capire il colore delle mie vene per determinare il sottotono?', 'colore vene')">?</button>
+          </label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="vein_color" id="vein_blu" value="blu_viola">
+              <label for="vein_blu">Blu/viola</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="vein_color" id="vein_verde" value="verdi">
+              <label for="vein_verde">Verdi</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="vein_color" id="vein_miste" value="miste">
+              <label for="vein_miste">Tra blu e verde</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-back" onclick="prevStep()">← Indietro</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continua →</button>
         </div>
       </div>
-      
-      <!-- Step 3 -->
+
+      <!-- Step 3: Make-up -->
       <div class="step-content" id="step-3">
-        <h2 class="question-title">Quanti anni hai?</h2>
-        <p class="question-subtitle">L'età aiuta a personalizzare i consigli</p>
+        <h2 class="section-title">Le Tue Preferenze Make-up</h2>
+        <p class="section-subtitle">Personalizza i consigli make-up in base alle tue preferenze</p>
         
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="age" value="18-25">
-            <span class="option-label">18-25 anni</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="age" value="26-35">
-            <span class="option-label">26-35 anni</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="age" value="36-45">
-            <span class="option-label">36-45 anni</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="age" value="46-55">
-            <span class="option-label">46-55 anni</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="age" value="56+">
-            <span class="option-label">56+ anni</span>
-          </label>
-        </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn-back" onclick="prevStep()">Indietro</button>
-          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
-        </div>
-      </div>
-      
-      <!-- Step 4 -->
-      <div class="step-content" id="step-4">
-        <h2 class="question-title">Hai una routine skincare?</h2>
-        <p class="question-subtitle">Descrivici la tua routine attuale</p>
-        
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="routine" value="none">
-            <div>
-              <span class="option-label">Nessuna routine</span>
-              <p class="option-description">Non uso prodotti specifici</p>
+        <div class="form-group">
+          <label class="form-label">Che livello di coprenza preferisci per il fondotinta?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="foundation_coverage" id="coverage_leggera" value="leggera">
+              <label for="coverage_leggera">Leggera e naturale</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="routine" value="basic">
-            <div>
-              <span class="option-label">Base</span>
-              <p class="option-description">Detergente e crema idratante</p>
+            <div class="radio-option">
+              <input type="radio" name="foundation_coverage" id="coverage_media" value="media">
+              <label for="coverage_media">Media e uniforme</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="routine" value="intermediate">
-            <div>
-              <span class="option-label">Intermedia</span>
-              <p class="option-description">Detergente, tonico, siero, crema</p>
+            <div class="radio-option">
+              <input type="radio" name="foundation_coverage" id="coverage_alta" value="alta">
+              <label for="coverage_alta">Alta e perfetta</label>
             </div>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="routine" value="advanced">
-            <div>
-              <span class="option-label">Avanzata</span>
-              <p class="option-description">Routine completa multi-step</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Che tipo di finish preferisci?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="foundation_finish" id="finish_opaco" value="opaco">
+              <label for="finish_opaco">Opaco</label>
             </div>
-          </label>
+            <div class="radio-option">
+              <input type="radio" name="foundation_finish" id="finish_luminoso" value="luminoso">
+              <label for="finish_luminoso">Luminoso</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="foundation_finish" id="finish_naturale" value="naturale">
+              <label for="finish_naturale">Naturale/satinato</label>
+            </div>
+          </div>
         </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn-back" onclick="prevStep()">Indietro</button>
-          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+
+        <div class="form-group">
+          <label class="form-label">Che colori preferisci per gli ombretti? (seleziona tutti)</label>
+          <div class="checkbox-group">
+            <div class="checkbox-option">
+              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_nude" value="nude">
+              <label for="eyeshadow_nude">Nude/Neutri</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_caldi" value="caldi">
+              <label for="eyeshadow_caldi">Colori caldi</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_freddi" value="freddi">
+              <label for="eyeshadow_freddi">Colori freddi</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_accesi" value="accesi">
+              <label for="eyeshadow_accesi">Colori accesi</label>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <!-- Step 5 -->
-      <div class="step-content" id="step-5">
-        <h2 class="question-title">Usi la protezione solare?</h2>
-        <p class="question-subtitle">La protezione solare è fondamentale</p>
-        
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="sunscreen" value="daily">
-            <span class="option-label">Ogni giorno</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="sunscreen" value="sometimes">
-            <span class="option-label">Qualche volta</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="sunscreen" value="summer">
-            <span class="option-label">Solo d'estate</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="sunscreen" value="never">
-            <span class="option-label">Mai</span>
-          </label>
+
+        <div class="form-group">
+          <label class="form-label">Che texture preferisci nei prodotti viso?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="texture_preference" id="texture_liquidi" value="liquidi">
+              <label for="texture_liquidi">Liquidi</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="texture_preference" id="texture_crema" value="crema">
+              <label for="texture_crema">In crema</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="texture_preference" id="texture_polvere" value="polvere">
+              <label for="texture_polvere">In polvere</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="texture_preference" id="texture_stick" value="stick">
+              <label for="texture_stick">Stick</label>
+            </div>
+          </div>
         </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn-back" onclick="prevStep()">Indietro</button>
-          <button class="btn btn-primary btn-next" onclick="nextStep()">Continua</button>
+
+        <div class="form-group">
+          <label class="form-label">Hai esigenze specifiche? (seleziona tutte)</label>
+          <div class="checkbox-group">
+            <div class="checkbox-option">
+              <input type="checkbox" name="makeup_needs" id="need_vegan" value="vegan">
+              <label for="need_vegan">Vegan</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="makeup_needs" id="need_noncomedogeno" value="non_comedogeno">
+              <label for="need_noncomedogeno">Non comedogeno</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="makeup_needs" id="need_lunga_tenuta" value="lunga_tenuta">
+              <label for="need_lunga_tenuta">Lunga tenuta</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="makeup_needs" id="need_idratante" value="idratante">
+              <label for="need_idratante">Idratante</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="makeup_needs" id="need_nessuna" value="nessuna">
+              <label for="need_nessuna">Nessuna particolare</label>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <!-- Step 6 -->
-      <div class="step-content" id="step-6">
-        <h2 class="question-title">Qual è il tuo obiettivo principale?</h2>
-        <p class="question-subtitle">Cosa vorresti migliorare?</p>
-        
-        <div class="options-grid">
-          <label class="option-card">
-            <input type="radio" name="goal" value="hydration">
-            <span class="option-label">Idratazione profonda</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="goal" value="anti-aging">
-            <span class="option-label">Anti-età e rassodamento</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="goal" value="brightness">
-            <span class="option-label">Luminosità e uniformità</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="goal" value="acne">
-            <span class="option-label">Ridurre acne e imperfezioni</span>
-          </label>
-          
-          <label class="option-card">
-            <input type="radio" name="goal" value="sensitivity">
-            <span class="option-label">Calmare la pelle sensibile</span>
-          </label>
-        </div>
-        
-        <div class="navigation-buttons">
-          <button class="btn-back" onclick="prevStep()">Indietro</button>
-          <button class="btn btn-primary btn-next" onclick="completeQuestionnaire()">Completa</button>
+
+        <div class="btn-group">
+          <button class="btn btn-back" onclick="prevStep()">← Indietro</button>
+          <button class="btn btn-primary" onclick="completeQuestionnaire()">Completa e Continua →</button>
         </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- Assistant Modal -->
+  <div class="assistant-modal" id="assistantModal">
+    <div class="assistant-content">
+      <div class="assistant-header">
+        <h3 style="color: var(--dark);">🤖 Assistente SkinAI</h3>
+        <button class="assistant-close" onclick="closeAssistant()">&times;</button>
+      </div>
+      <div id="assistantAnswer" class="assistant-answer">
+        <div class="assistant-loading">
+          <div class="spinner"></div>
+          <span>Sto elaborando la risposta...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
   <script>
     let currentStep = 1;
-    const totalSteps = 6;
+    const totalSteps = 3;
     
-    // Add click handlers to option cards
-    document.querySelectorAll('.option-card').forEach(card => {
-      card.addEventListener('click', function() {
-        const input = this.querySelector('input');
-        if (input.type === 'radio') {
-          // Remove selected class from siblings
-          this.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-          this.classList.add('selected');
-        } else {
-          this.classList.toggle('selected');
+    // Pre-fill questionnaire if exists
+    async function loadPreviousQuestionnaire() {
+      try {
+        const data = await api.getLastQuestionnaire();
+        if (data && data.data) {
+          const q = data.data;
+          
+          // Fill radio buttons
+          if (q.skin_behavior) document.querySelector(`input[name="skin_behavior"][value="${q.skin_behavior}"]`)?.click();
+          if (q.morning_skin) document.querySelector(`input[name="morning_skin"][value="${q.morning_skin}"]`)?.click();
+          if (q.after_cleansing) document.querySelector(`input[name="after_cleansing"][value="${q.after_cleansing}"]`)?.click();
+          if (q.sensitive_skin) document.querySelector(`input[name="sensitive_skin"][value="${q.sensitive_skin}"]`)?.click();
+          if (q.sun_reaction) document.querySelector(`input[name="sun_reaction"][value="${q.sun_reaction}"]`)?.click();
+          if (q.vein_color) document.querySelector(`input[name="vein_color"][value="${q.vein_color}"]`)?.click();
+          if (q.foundation_coverage) document.querySelector(`input[name="foundation_coverage"][value="${q.foundation_coverage}"]`)?.click();
+          if (q.foundation_finish) document.querySelector(`input[name="foundation_finish"][value="${q.foundation_finish}"]`)?.click();
+          if (q.texture_preference) document.querySelector(`input[name="texture_preference"][value="${q.texture_preference}"]`)?.click();
+          
+          // Fill selects
+          if (q.water_intake) document.getElementById('water_intake').value = q.water_intake;
+          if (q.hair_color) document.getElementById('hair_color').value = q.hair_color;
+          if (q.skin_color) document.getElementById('skin_color').value = q.skin_color;
+          if (q.eye_color) document.getElementById('eye_color').value = q.eye_color;
+          
+          // Fill checkboxes
+          if (q.concerns) {
+            q.concerns.forEach(c => {
+              const cb = document.querySelector(`input[name="concerns"][value="${c}"]`);
+              if (cb) cb.checked = true;
+            });
+          }
+          if (q.eyeshadow_colors) {
+            q.eyeshadow_colors.forEach(c => {
+              const cb = document.querySelector(`input[name="eyeshadow_colors"][value="${c}"]`);
+              if (cb) cb.checked = true;
+            });
+          }
+          if (q.makeup_needs) {
+            q.makeup_needs.forEach(c => {
+              const cb = document.querySelector(`input[name="makeup_needs"][value="${c}"]`);
+              if (cb) cb.checked = true;
+            });
+          }
         }
-      });
-    });
+      } catch (e) {
+        console.log('No previous questionnaire');
+      }
+    }
+    
+    // Load on page load
+    if (api.isAuthenticated()) {
+      loadPreviousQuestionnaire();
+    } else {
+      window.location.href = 'auth.html';
+    }
     
     function nextStep() {
       if (currentStep < totalSteps) {
@@ -446,6 +757,8 @@
         
         document.getElementById(`step-${currentStep}`).classList.add('active');
         document.getElementById(`dot-${currentStep}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
     
@@ -459,16 +772,78 @@
         document.getElementById(`step-${currentStep}`).classList.add('active');
         document.getElementById(`dot-${currentStep}`).classList.remove('completed');
         document.getElementById(`dot-${currentStep}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
     
-    function completeQuestionnaire() {
-      // TODO: Save questionnaire data
-      alert('Questionario completato! Procedi al caricamento delle foto.');
-      window.location.href = 'upload.html';
+    function getFormData() {
+      // Get all form values
+      const data = {
+        // Step 1 - Skincare
+        skin_behavior: document.querySelector('input[name="skin_behavior"]:checked')?.value || '',
+        morning_skin: document.querySelector('input[name="morning_skin"]:checked')?.value || '',
+        after_cleansing: document.querySelector('input[name="after_cleansing"]:checked')?.value || '',
+        sensitive_skin: document.querySelector('input[name="sensitive_skin"]:checked')?.value || '',
+        concerns: Array.from(document.querySelectorAll('input[name="concerns"]:checked')).map(cb => cb.value),
+        water_intake: document.getElementById('water_intake').value,
+        
+        // Step 2 - Armocromia
+        hair_color: document.getElementById('hair_color').value,
+        skin_color: document.getElementById('skin_color').value,
+        eye_color: document.getElementById('eye_color').value,
+        sun_reaction: document.querySelector('input[name="sun_reaction"]:checked')?.value || '',
+        vein_color: document.querySelector('input[name="vein_color"]:checked')?.value || '',
+        
+        // Step 3 - Make-up
+        foundation_coverage: document.querySelector('input[name="foundation_coverage"]:checked')?.value || '',
+        foundation_finish: document.querySelector('input[name="foundation_finish"]:checked')?.value || '',
+        eyeshadow_colors: Array.from(document.querySelectorAll('input[name="eyeshadow_colors"]:checked')).map(cb => cb.value),
+        texture_preference: document.querySelector('input[name="texture_preference"]:checked')?.value || '',
+        makeup_needs: Array.from(document.querySelectorAll('input[name="makeup_needs"]:checked')).map(cb => cb.value)
+      };
+      
+      return data;
     }
+    
+    async function completeQuestionnaire() {
+      const data = getFormData();
+      
+      try {
+        await api.submitQuestionnaire(data);
+        alert('Questionario salvato! Ora procedi al caricamento delle foto.');
+        window.location.href = 'upload.html';
+      } catch (error) {
+        alert('Errore nel salvataggio: ' + error.message);
+      }
+    }
+    
+    // Assistant functions
+    async function askAssistant(question, context) {
+      document.getElementById('assistantModal').classList.add('active');
+      document.getElementById('assistantAnswer').innerHTML = `
+        <div class="assistant-loading">
+          <div class="spinner"></div>
+          <span>Sto elaborando la risposta...</span>
+        </div>
+      `;
+      
+      try {
+        const response = await api.askAssistant(question, context);
+        document.getElementById('assistantAnswer').innerHTML = response.answer;
+      } catch (error) {
+        document.getElementById('assistantAnswer').innerHTML = 'Mi dispiace, non sono riuscito a elaborare la risposta. Riprova più tardi.';
+      }
+    }
+    
+    function closeAssistant() {
+      document.getElementById('assistantModal').classList.remove('active');
+    }
+    
+    // Close modal on outside click
+    document.getElementById('assistantModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAssistant();
+    });
   </script>
-  <script src="js/api.js"></script>
-  <script src="js/assistant.js"></script>
 </body>
 </html>
