@@ -275,10 +275,44 @@
           </div>
         </div>
         
+        <!-- Consenso GDPR -->
+        <div class="gdpr-consent" style="margin-top: 2rem; padding: 1.5rem; background: #FFF8F5; border-radius: 12px; border: 1px solid var(--primary);">
+          <h3 style="font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Informativa Privacy e Consenso
+          </h3>
+          <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 1rem; line-height: 1.6;">
+            Le tue foto saranno elaborate esclusivamente per fornirti un'analisi personalizzata della pelle. 
+            I dati biometrici (immagini del viso) saranno trattati in conformità al GDPR (Regolamento UE 2016/679) 
+            e non saranno condivisi con terze parti. Puoi richiedere la cancellazione dei tuoi dati in qualsiasi momento.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+              <input type="checkbox" id="consent-processing" style="margin-top: 0.25rem; width: 18px; height: 18px; accent-color: var(--primary);">
+              <span style="font-size: 0.875rem; color: var(--gray-700);">
+                <strong>Acconsento al trattamento delle mie immagini</strong> per l'analisi della pelle tramite intelligenza artificiale. 
+                Ho letto e compreso l'<a href="privacy.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Informativa Privacy</a>.
+              </span>
+            </label>
+            <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer;">
+              <input type="checkbox" id="consent-storage" style="margin-top: 0.25rem; width: 18px; height: 18px; accent-color: var(--primary);">
+              <span style="font-size: 0.875rem; color: var(--gray-700);">
+                <strong>Acconsento alla conservazione temporanea</strong> delle mie foto per il tempo necessario all'elaborazione 
+                (massimo 24 ore), dopodiché saranno automaticamente eliminate.
+              </span>
+            </label>
+          </div>
+        </div>
+        
         <div class="text-center mt-8">
           <button class="btn btn-primary" style="padding: 1rem 3rem;" onclick="startAnalysis()" id="analyze-btn" disabled>
             Avvia Analisi
           </button>
+          <p id="consent-error" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem; display: none;">
+            Devi accettare entrambi i consensi per procedere con l'analisi.
+          </p>
         </div>
       </div>
       
@@ -396,14 +430,31 @@
     
     function checkAllUploaded() {
       const allUploaded = uploadedFiles.front && uploadedFiles.left && uploadedFiles.right;
-      document.getElementById('analyze-btn').disabled = !allUploaded;
+      const consentProcessing = document.getElementById('consent-processing').checked;
+      const consentStorage = document.getElementById('consent-storage').checked;
+      const allConsents = consentProcessing && consentStorage;
+      
+      document.getElementById('analyze-btn').disabled = !(allUploaded && allConsents);
+      document.getElementById('consent-error').style.display = 'none';
     }
+    
+    // Aggiungi listener per i checkbox del consenso
+    document.getElementById('consent-processing').addEventListener('change', checkAllUploaded);
+    document.getElementById('consent-storage').addEventListener('change', checkAllUploaded);
     
     async function startAnalysis() {
       // Check auth
       if (!api.isAuthenticated()) {
         alert('Devi effettuare il login per procedere.');
         window.location.href = 'auth.html';
+        return;
+      }
+      
+      // Verifica consensi GDPR
+      const consentProcessing = document.getElementById('consent-processing').checked;
+      const consentStorage = document.getElementById('consent-storage').checked;
+      if (!consentProcessing || !consentStorage) {
+        document.getElementById('consent-error').style.display = 'block';
         return;
       }
       
