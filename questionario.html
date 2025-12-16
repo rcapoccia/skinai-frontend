@@ -7,32 +7,64 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="images/logo.png">
   
   <style>
-    .questionnaire-container {
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #FDF8F5 0%, #F9E8E0 50%, #F5DED4 100%);
       min-height: 100vh;
-      background: linear-gradient(135deg, var(--secondary), var(--light));
-      padding: 2rem 1rem;
+      margin: 0;
+      padding: 0;
     }
     
-    .questionnaire-card {
-      max-width: 800px;
+    .quiz-container {
+      max-width: 600px;
       margin: 0 auto;
-      background: white;
-      border-radius: 1.5rem;
-      padding: 2.5rem;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      min-height: 100vh;
     }
     
-    .progress-bar {
+    /* Header */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .quiz-logo {
+      height: 40px;
+    }
+    
+    .back-link {
+      color: #886349;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .back-link:hover {
+      color: #6B4D38;
+    }
+    
+    /* Progress Steps */
+    .progress-container {
       display: flex;
       justify-content: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
     }
     
     .progress-step {
@@ -42,36 +74,380 @@
       gap: 0.5rem;
     }
     
-    .progress-dot {
-      width: 3rem;
-      height: 3rem;
+    .step-circle {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: var(--secondary);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 600;
-      color: var(--dark);
-      transition: all 0.3s;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      color: #B8A090;
+      border: 2px solid #E8D9C5;
     }
     
-    .progress-dot.active {
-      background: linear-gradient(135deg, var(--primary), var(--tertiary));
+    .step-circle.active {
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
       color: white;
+      border: none;
+      box-shadow: 0 4px 15px rgba(209, 167, 140, 0.4);
+    }
+    
+    .step-circle.completed {
+      background: #22c55e;
+      color: white;
+      border: none;
+    }
+    
+    .step-label {
+      font-size: 0.7rem;
+      color: #886349;
+      text-align: center;
+      font-weight: 500;
+      max-width: 80px;
+    }
+    
+    .step-line {
+      width: 40px;
+      height: 2px;
+      background: #E8D9C5;
+      margin-bottom: 1.5rem;
+    }
+    
+    .step-line.completed {
+      background: linear-gradient(90deg, #22c55e, #D1A78C);
+    }
+    
+    /* Card */
+    .quiz-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(136, 99, 73, 0.1);
+    }
+    
+    .quiz-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #4A3728;
+      margin-bottom: 0.5rem;
+    }
+    
+    .quiz-subtitle {
+      color: #886349;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+    
+    /* Question Group */
+    .question-group {
+      margin-bottom: 2rem;
+    }
+    
+    .question-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      color: #4A3728;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    
+    .help-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
+      color: white;
+      border: none;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    
+    .help-btn:hover {
       transform: scale(1.1);
     }
     
-    .progress-dot.completed {
-      background: var(--tertiary);
-      color: white;
+    /* Pill Options (Radio) */
+    .pill-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
     
-    .progress-label {
+    .pill-option {
+      position: relative;
+    }
+    
+    .pill-option input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .pill-option label {
+      display: block;
+      padding: 0.75rem 1.25rem;
+      background: #FDF8F5;
+      border: 2px solid #E8D9C5;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: #886349;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .pill-option input:checked + label {
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 15px rgba(209, 167, 140, 0.3);
+    }
+    
+    .pill-option label:hover {
+      border-color: #D1A78C;
+      background: #FAF0EA;
+    }
+    
+    /* Checkbox Options */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    @media (max-width: 480px) {
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .checkbox-option {
+      position: relative;
+    }
+    
+    .checkbox-option input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .checkbox-option label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: #FDF8F5;
+      border: 2px solid #E8D9C5;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: #886349;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .checkbox-option .check-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid #D1A78C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    
+    .checkbox-option .check-icon svg {
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .checkbox-option input:checked + label {
+      background: linear-gradient(135deg, rgba(209, 167, 140, 0.15), rgba(183, 138, 114, 0.15));
+      border-color: #D1A78C;
+    }
+    
+    .checkbox-option input:checked + label .check-icon {
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
+      border-color: transparent;
+    }
+    
+    .checkbox-option input:checked + label .check-icon svg {
+      opacity: 1;
+    }
+    
+    .checkbox-option label:hover {
+      border-color: #D1A78C;
+    }
+    
+    /* Select Dropdown */
+    .select-wrapper {
+      position: relative;
+    }
+    
+    .styled-select {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: #FDF8F5;
+      border: 2px solid #E8D9C5;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      color: #886349;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      appearance: none;
+      transition: all 0.2s;
+    }
+    
+    .styled-select:focus {
+      outline: none;
+      border-color: #D1A78C;
+      box-shadow: 0 0 0 3px rgba(209, 167, 140, 0.2);
+    }
+    
+    .select-arrow {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #886349;
+    }
+    
+    /* Color Options (for Armocromia) */
+    .color-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    
+    @media (max-width: 480px) {
+      .color-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .color-option {
+      position: relative;
+    }
+    
+    .color-option input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .color-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 0.5rem;
+      background: white;
+      border: 2px solid #E8D9C5;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .color-option .color-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .color-option .color-name {
       font-size: 0.75rem;
-      color: var(--gray-600);
+      color: #886349;
+      font-weight: 500;
       text-align: center;
     }
     
+    .color-option input:checked + label {
+      border-color: #D1A78C;
+      background: linear-gradient(135deg, rgba(209, 167, 140, 0.1), rgba(183, 138, 114, 0.1));
+      box-shadow: 0 4px 15px rgba(209, 167, 140, 0.2);
+    }
+    
+    /* Navigation Buttons */
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #E8D9C5;
+    }
+    
+    .btn-back {
+      padding: 0.875rem 1.5rem;
+      background: transparent;
+      border: 2px solid #E8D9C5;
+      border-radius: 50px;
+      color: #886349;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-back:hover {
+      border-color: #D1A78C;
+      background: #FDF8F5;
+    }
+    
+    .btn-next {
+      padding: 0.875rem 2rem;
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(209, 167, 140, 0.4);
+    }
+    
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(209, 167, 140, 0.5);
+    }
+    
+    .btn-next:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Step Content */
     .step-content {
       display: none;
     }
@@ -86,117 +462,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    .section-title {
-      font-size: 1.75rem;
-      margin-bottom: 0.5rem;
-      color: var(--dark);
-    }
-    
-    .section-subtitle {
-      color: var(--gray-600);
-      margin-bottom: 2rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 0.75rem;
-    }
-    
-    .help-btn {
-      width: 1.25rem;
-      height: 1.25rem;
-      border-radius: 50%;
-      background: var(--secondary);
-      border: none;
-      color: var(--dark);
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .help-btn:hover {
-      background: var(--primary);
-      color: white;
-    }
-    
-    .form-select, .form-input {
-      width: 100%;
-      padding: 0.875rem 1rem;
-      border: 2px solid var(--secondary);
-      border-radius: 0.75rem;
-      font-size: 1rem;
-      transition: all 0.2s;
-      background: white;
-    }
-    
-    .form-select:focus, .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(209, 167, 140, 0.2);
-    }
-    
-    .radio-group, .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.75rem;
-    }
-    
-    .radio-option, .checkbox-option {
-      position: relative;
-    }
-    
-    .radio-option input, .checkbox-option input {
-      position: absolute;
-      opacity: 0;
-    }
-    
-    .radio-option label, .checkbox-option label {
-      display: block;
-      padding: 1rem;
-      border: 2px solid var(--secondary);
-      border-radius: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-    
-    .radio-option input:checked + label,
-    .checkbox-option input:checked + label {
-      border-color: var(--primary);
-      background: rgba(209, 167, 140, 0.1);
-    }
-    
-    .radio-option label:hover,
-    .checkbox-option label:hover {
-      border-color: var(--tertiary);
-    }
-    
-    .btn-group {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--secondary);
-    }
-    
-    .btn-back {
-      background: transparent;
-      color: var(--dark);
-      border: 2px solid var(--secondary);
-    }
-    
-    .btn-back:hover {
-      border-color: var(--primary);
-    }
-    
     /* Assistant Modal */
     .assistant-modal {
       display: none;
@@ -205,7 +470,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(74, 55, 40, 0.5);
       z-index: 1000;
       align-items: center;
       justify-content: center;
@@ -218,50 +483,63 @@
     
     .assistant-content {
       background: white;
-      border-radius: 1rem;
+      border-radius: 24px;
       padding: 2rem;
-      max-width: 500px;
+      max-width: 400px;
       width: 100%;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .assistant-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+      box-shadow: 0 20px 60px rgba(74, 55, 40, 0.3);
+      position: relative;
     }
     
     .assistant-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       background: none;
       border: none;
-      font-size: 1.5rem;
       cursor: pointer;
-      color: var(--gray-600);
+      color: #886349;
     }
     
-    .assistant-answer {
-      background: var(--light);
-      padding: 1rem;
-      border-radius: 0.75rem;
+    .assistant-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #D1A78C, #B78A72);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    
+    .assistant-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: #4A3728;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .assistant-text {
+      color: #886349;
+      font-size: 0.9rem;
       line-height: 1.6;
+      text-align: center;
     }
     
     .assistant-loading {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--gray-600);
+      text-align: center;
+      padding: 1rem;
     }
     
-    .spinner {
-      width: 1.25rem;
-      height: 1.25rem;
-      border: 2px solid var(--secondary);
-      border-top-color: var(--primary);
+    .assistant-loading .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #E8D9C5;
+      border-top-color: #D1A78C;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin: 0 auto;
     }
     
     @keyframes spin {
@@ -270,569 +548,606 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header style="background: white; padding: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+  <div class="quiz-container">
+    <!-- Header -->
+    <div class="quiz-header">
       <a href="index.html">
-        <img src="images/logo.png" alt="SkinAI" style="height: 40px;">
+        <img src="images/logo.png" alt="SkinAI" class="quiz-logo">
       </a>
-      <a href="dashboard.html" style="color: var(--dark); text-decoration: none;">← Torna alla Dashboard</a>
+      <a href="dashboard.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Dashboard
+      </a>
     </div>
-  </header>
-
-  <div class="questionnaire-container">
-    <div class="questionnaire-card">
-      <!-- Progress Bar -->
-      <div class="progress-bar">
-        <div class="progress-step">
-          <div class="progress-dot active" id="dot-1">1</div>
-          <span class="progress-label">La Tua Pelle</span>
-        </div>
-        <div class="progress-step">
-          <div class="progress-dot" id="dot-2">2</div>
-          <span class="progress-label">I Tuoi Colori</span>
-        </div>
-        <div class="progress-step">
-          <div class="progress-dot" id="dot-3">3</div>
-          <span class="progress-label">Make-up</span>
-        </div>
+    
+    <!-- Progress Steps -->
+    <div class="progress-container">
+      <div class="progress-step">
+        <div class="step-circle active" id="step-circle-1">1</div>
+        <span class="step-label">La Tua Pelle</span>
       </div>
-
-      <!-- Step 1: Skincare -->
+      <div class="step-line" id="step-line-1"></div>
+      <div class="progress-step">
+        <div class="step-circle" id="step-circle-2">2</div>
+        <span class="step-label">I Tuoi Colori</span>
+      </div>
+      <div class="step-line" id="step-line-2"></div>
+      <div class="progress-step">
+        <div class="step-circle" id="step-circle-3">3</div>
+        <span class="step-label">Make-up</span>
+      </div>
+    </div>
+    
+    <!-- Quiz Card -->
+    <div class="quiz-card">
+      <!-- Step 1: La Tua Pelle -->
       <div class="step-content active" id="step-1">
-        <h2 class="section-title">La Tua Pelle</h2>
-        <p class="section-subtitle">Aiutaci a capire meglio la tua pelle per un'analisi personalizzata</p>
+        <h1 class="quiz-title">La Tua Pelle</h1>
+        <p class="quiz-subtitle">Aiutaci a capire meglio la tua pelle per un'analisi personalizzata</p>
         
-        <div class="form-group">
-          <label class="form-label">
+        <div class="question-group">
+          <div class="question-label">
             Come si comporta la tua pelle durante il giorno?
-            <button class="help-btn" onclick="askAssistant('Come capisco se la mia pelle è grassa, secca o mista durante il giorno?', 'comportamento pelle')">?</button>
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="skin_behavior" id="skin_lucida" value="lucida">
-              <label for="skin_lucida">Tende a lucidarsi</label>
+            <button class="help-btn" onclick="showAssistant('comportamento_giorno')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="skin_behavior" id="skin_oily" value="lucida">
+              <label for="skin_oily">Tende a lucidarsi</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="skin_behavior" id="skin_secca" value="secca">
-              <label for="skin_secca">Si secca</label>
+            <div class="pill-option">
+              <input type="radio" name="skin_behavior" id="skin_dry" value="secca">
+              <label for="skin_dry">Si secca</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="skin_behavior" id="skin_normale" value="normale">
-              <label for="skin_normale">Rimane normale</label>
+            <div class="pill-option">
+              <input type="radio" name="skin_behavior" id="skin_normal" value="normale">
+              <label for="skin_normal">Rimane normale</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="skin_behavior" id="skin_zone" value="a_zone">
-              <label for="skin_zone">A zone (mista)</label>
+            <div class="pill-option">
+              <input type="radio" name="skin_behavior" id="skin_combo" value="a_zone">
+              <label for="skin_combo">A zone (mista)</label>
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Com'è la tua pelle al mattino appena sveglia?
-            <button class="help-btn" onclick="askAssistant('Come dovrei valutare la mia pelle al mattino?', 'pelle mattino')">?</button>
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="morning_skin" id="morning_lucida" value="lucida">
-              <label for="morning_lucida">Lucida</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="morning_skin" id="morning_secca" value="secca">
-              <label for="morning_secca">Secca</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="morning_skin" id="morning_normale" value="normale">
-              <label for="morning_normale">Normale</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="morning_skin" id="morning_zone" value="a_zone">
-              <label for="morning_zone">A zone</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Dopo la detersione, come reagisce la pelle?
-            <button class="help-btn" onclick="askAssistant('Cosa significa se la pelle tira dopo la detersione?', 'reazione detersione')">?</button>
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="after_cleansing" id="cleansing_tira" value="tira">
-              <label for="cleansing_tira">Tira o brucia</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="after_cleansing" id="cleansing_arrossa" value="arrossa">
-              <label for="cleansing_arrossa">Si arrossa</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="after_cleansing" id="cleansing_nessuna" value="nessuna">
-              <label for="cleansing_nessuna">Nessuna reazione</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Hai la pelle sensibile o condizioni diagnosticate?
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="sensitive_skin" id="sensitive_si" value="si_diagnosticata">
-              <label for="sensitive_si">Sì, diagnosticata</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="sensitive_skin" id="sensitive_forse" value="forse">
-              <label for="sensitive_forse">Forse</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="sensitive_skin" id="sensitive_no" value="no">
-              <label for="sensitive_no">No</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Quali problematiche noti sulla tua pelle? (seleziona tutte quelle applicabili)
-            <button class="help-btn" onclick="askAssistant('Come riconosco le diverse problematiche della pelle?', 'problematiche pelle')">?</button>
-          </label>
-          <div class="checkbox-group">
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_acne" value="acne">
-              <label for="concern_acne">Acne / Brufoli</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_macchie" value="macchie">
-              <label for="concern_macchie">Macchie scure</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_rughe" value="rughe">
-              <label for="concern_rughe">Rughe / Linee</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_pori" value="pori">
-              <label for="concern_pori">Pori dilatati</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_rossori" value="rossori">
-              <label for="concern_rossori">Rossori</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_secchezza" value="secchezza">
-              <label for="concern_secchezza">Secchezza</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_lucidita" value="lucidita">
-              <label for="concern_lucidita">Lucidità eccessiva</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="concerns" id="concern_nessuna" value="nessuna">
-              <label for="concern_nessuna">Nessuna particolare</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Quanta acqua bevi al giorno?</label>
-          <select class="form-select" name="water_intake" id="water_intake">
-            <option value="">Seleziona...</option>
-            <option value="meno_1l">Meno di 1 litro</option>
-            <option value="1_2l">1-2 litri</option>
-            <option value="piu_2l">Più di 2 litri</option>
-          </select>
-        </div>
-
-        <div class="btn-group">
-          <div></div>
-          <button class="btn btn-primary" onclick="nextStep()">Continua →</button>
-        </div>
-      </div>
-
-      <!-- Step 2: Armocromia -->
-      <div class="step-content" id="step-2">
-        <h2 class="section-title">I Tuoi Colori</h2>
-        <p class="section-subtitle">Queste informazioni ci aiutano a determinare la tua armocromia</p>
         
-        <div class="form-group">
-          <label class="form-label">
-            Qual è il colore naturale dei tuoi capelli?
-            <button class="help-btn" onclick="askAssistant('Come capisco il mio colore naturale di capelli se li tingo?', 'colore capelli')">?</button>
-          </label>
-          <select class="form-select" name="hair_color" id="hair_color">
-            <option value="">Seleziona...</option>
-            <option value="biondo_chiaro">Biondi chiari, platino, cenere</option>
-            <option value="castano_chiaro_freddo">Castano chiaro freddo/cenere</option>
-            <option value="castano_medio_caldo">Castano medio caldo, ramato</option>
-            <option value="castano_scuro_nero">Castano scuro o nero</option>
-            <option value="rossi">Rossi naturali</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Qual è il colore naturale della tua pelle?
-            <button class="help-btn" onclick="askAssistant('Come determino il colore naturale della mia pelle?', 'colore pelle')">?</button>
-          </label>
-          <select class="form-select" name="skin_color" id="skin_color">
-            <option value="">Seleziona...</option>
-            <option value="molto_chiara">Molto chiara, porcellana</option>
-            <option value="chiara_rosata">Chiara rosata o neutra</option>
-            <option value="beige_dorato">Beige dorato o olivastro</option>
-            <option value="media_calda">Media calda (miele, ambrata)</option>
-            <option value="scura_dorata">Scura dorata</option>
-            <option value="scura_fredda">Scura fredda</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Qual è il colore dei tuoi occhi?</label>
-          <select class="form-select" name="eye_color" id="eye_color">
-            <option value="">Seleziona...</option>
-            <option value="azzurri">Azzurri o grigio-azzurri</option>
-            <option value="verdi">Verdi o nocciola chiaro</option>
-            <option value="castani_caldi">Castani caldi</option>
-            <option value="castani_scuri">Castani scuri/neutri</option>
-            <option value="neri">Neri/marrone profondo</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Come reagisce la tua pelle al sole?
-            <button class="help-btn" onclick="askAssistant('Perché la reazione al sole è importante per l\'armocromia?', 'reazione sole')">?</button>
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="sun_reaction" id="sun_scotto" value="scotto">
-              <label for="sun_scotto">Mi scotto e divento rossa</label>
+        <div class="question-group">
+          <div class="question-label">
+            Com'è la tua pelle al mattino appena sveglia?
+            <button class="help-btn" onclick="showAssistant('pelle_mattino')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="morning_skin" id="morning_oily" value="lucida">
+              <label for="morning_oily">Lucida</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="sun_reaction" id="sun_lento" value="abbronzo_lento">
-              <label for="sun_lento">Abbronzo lentamente</label>
+            <div class="pill-option">
+              <input type="radio" name="morning_skin" id="morning_dry" value="secca">
+              <label for="morning_dry">Secca</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="sun_reaction" id="sun_dorata" value="abbronzo_dorata">
-              <label for="sun_dorata">Abbronzo dorata/ambrata</label>
+            <div class="pill-option">
+              <input type="radio" name="morning_skin" id="morning_normal" value="normale">
+              <label for="morning_normal">Normale</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="sun_reaction" id="sun_scura" value="molto_scura">
-              <label for="sun_scura">Non mi scotto mai</label>
+            <div class="pill-option">
+              <input type="radio" name="morning_skin" id="morning_combo" value="a_zone">
+              <label for="morning_combo">A zone</label>
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">
-            Di che colore sono le vene del tuo polso?
-            <button class="help-btn" onclick="askAssistant('Come faccio a capire il colore delle mie vene per determinare il sottotono?', 'colore vene')">?</button>
-          </label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="vein_color" id="vein_blu" value="blu_viola">
-              <label for="vein_blu">Blu/viola</label>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Dopo la detersione, come reagisce la pelle?
+            <button class="help-btn" onclick="showAssistant('dopo_detersione')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="after_cleansing" id="cleanse_tight" value="tira">
+              <label for="cleanse_tight">Tira o brucia</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="vein_color" id="vein_verde" value="verdi">
-              <label for="vein_verde">Verdi</label>
+            <div class="pill-option">
+              <input type="radio" name="after_cleansing" id="cleanse_red" value="arrossa">
+              <label for="cleanse_red">Si arrossa</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="vein_color" id="vein_miste" value="miste">
-              <label for="vein_miste">Tra blu e verde</label>
+            <div class="pill-option">
+              <input type="radio" name="after_cleansing" id="cleanse_normal" value="nessuna">
+              <label for="cleanse_normal">Nessuna reazione</label>
             </div>
           </div>
         </div>
-
-        <div class="btn-group">
-          <button class="btn btn-back" onclick="prevStep()">← Indietro</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continua →</button>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Quali problematiche noti sulla tua pelle?
+            <button class="help-btn" onclick="showAssistant('problematiche')">?</button>
+          </div>
+          <div class="checkbox-grid">
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_acne" value="acne">
+              <label for="issue_acne">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Acne / Brufoli
+              </label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_spots" value="macchie">
+              <label for="issue_spots">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Macchie scure
+              </label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_wrinkles" value="rughe">
+              <label for="issue_wrinkles">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Rughe / Linee
+              </label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_pores" value="pori">
+              <label for="issue_pores">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Pori dilatati
+              </label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_redness" value="rossori">
+              <label for="issue_redness">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Rossori
+              </label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" name="concerns" id="issue_dryness" value="secchezza">
+              <label for="issue_dryness">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Secchezza
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Quanta acqua bevi al giorno?
+            <button class="help-btn" onclick="showAssistant('acqua')">?</button>
+          </div>
+          <div class="select-wrapper">
+            <select class="styled-select" name="water_intake" id="water_intake">
+              <option value="">Seleziona...</option>
+              <option value="meno_1l">Meno di 1 litro</option>
+              <option value="1_2l">1-2 litri</option>
+              <option value="piu_2l">Più di 2 litri</option>
+            </select>
+            <div class="select-arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-nav">
+          <div></div>
+          <button class="btn-next" onclick="goToStep(2)">
+            Continua
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
         </div>
       </div>
-
+      
+      <!-- Step 2: I Tuoi Colori -->
+      <div class="step-content" id="step-2">
+        <h1 class="quiz-title">I Tuoi Colori</h1>
+        <p class="quiz-subtitle">Scopriamo la tua armocromia per consigli make-up personalizzati</p>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Qual è il colore naturale dei tuoi capelli?
+            <button class="help-btn" onclick="showAssistant('colore_capelli')">?</button>
+          </div>
+          <div class="color-options">
+            <div class="color-option">
+              <input type="radio" name="hair_color" id="hair_black" value="nero">
+              <label for="hair_black">
+                <div class="color-circle" style="background: #1a1a1a;"></div>
+                <span class="color-name">Nero</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="hair_color" id="hair_brown" value="castano">
+              <label for="hair_brown">
+                <div class="color-circle" style="background: #5c4033;"></div>
+                <span class="color-name">Castano</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="hair_color" id="hair_blonde" value="biondo">
+              <label for="hair_blonde">
+                <div class="color-circle" style="background: #d4a76a;"></div>
+                <span class="color-name">Biondo</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="hair_color" id="hair_red" value="rosso">
+              <label for="hair_red">
+                <div class="color-circle" style="background: #8b4513;"></div>
+                <span class="color-name">Rosso</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Qual è il colore dei tuoi occhi?
+            <button class="help-btn" onclick="showAssistant('colore_occhi')">?</button>
+          </div>
+          <div class="color-options">
+            <div class="color-option">
+              <input type="radio" name="eye_color" id="eye_brown" value="marroni">
+              <label for="eye_brown">
+                <div class="color-circle" style="background: #5c4033;"></div>
+                <span class="color-name">Marroni</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="eye_color" id="eye_green" value="verdi">
+              <label for="eye_green">
+                <div class="color-circle" style="background: #4a7c59;"></div>
+                <span class="color-name">Verdi</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="eye_color" id="eye_blue" value="azzurri">
+              <label for="eye_blue">
+                <div class="color-circle" style="background: #4a90a4;"></div>
+                <span class="color-name">Azzurri</span>
+              </label>
+            </div>
+            <div class="color-option">
+              <input type="radio" name="eye_color" id="eye_hazel" value="nocciola">
+              <label for="eye_hazel">
+                <div class="color-circle" style="background: linear-gradient(135deg, #5c4033, #4a7c59);"></div>
+                <span class="color-name">Nocciola</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Come reagisce la tua pelle al sole?
+            <button class="help-btn" onclick="showAssistant('reazione_sole')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="sun_reaction" id="sun_burn" value="scotto">
+              <label for="sun_burn">Mi scotto facilmente</label>
+            </div>
+            <div class="pill-option">
+              <input type="radio" name="sun_reaction" id="sun_tan" value="graduale">
+              <label for="sun_tan">Mi abbronzo gradualmente</label>
+            </div>
+            <div class="pill-option">
+              <input type="radio" name="sun_reaction" id="sun_easy" value="facile">
+              <label for="sun_easy">Mi abbronzo facilmente</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Di che colore sono le vene del tuo polso?
+            <button class="help-btn" onclick="showAssistant('colore_vene')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="vein_color" id="vein_blue" value="blu_viola">
+              <label for="vein_blue">Blu/Viola</label>
+            </div>
+            <div class="pill-option">
+              <input type="radio" name="vein_color" id="vein_green" value="verdi">
+              <label for="vein_green">Verdi</label>
+            </div>
+            <div class="pill-option">
+              <input type="radio" name="vein_color" id="vein_both" value="entrambi">
+              <label for="vein_both">Entrambi</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goToStep(1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Indietro
+          </button>
+          <button class="btn-next" onclick="goToStep(3)">
+            Continua
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
       <!-- Step 3: Make-up -->
       <div class="step-content" id="step-3">
-        <h2 class="section-title">Le Tue Preferenze Make-up</h2>
-        <p class="section-subtitle">Personalizza i consigli make-up in base alle tue preferenze</p>
+        <h1 class="quiz-title">Le Tue Preferenze</h1>
+        <p class="quiz-subtitle">Personalizza i consigli make-up in base ai tuoi gusti</p>
         
-        <div class="form-group">
-          <label class="form-label">Che livello di coprenza preferisci per il fondotinta?</label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="foundation_coverage" id="coverage_leggera" value="leggera">
-              <label for="coverage_leggera">Leggera e naturale</label>
+        <div class="question-group">
+          <div class="question-label">
+            Che tipo di coprenza preferisci per il fondotinta?
+            <button class="help-btn" onclick="showAssistant('coprenza_fondotinta')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="coverage" id="coverage_light" value="leggera">
+              <label for="coverage_light">Leggera / Naturale</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="foundation_coverage" id="coverage_media" value="media">
-              <label for="coverage_media">Media e uniforme</label>
+            <div class="pill-option">
+              <input type="radio" name="coverage" id="coverage_medium" value="media">
+              <label for="coverage_medium">Media</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="foundation_coverage" id="coverage_alta" value="alta">
-              <label for="coverage_alta">Alta e perfetta</label>
+            <div class="pill-option">
+              <input type="radio" name="coverage" id="coverage_full" value="alta">
+              <label for="coverage_full">Alta / Coprente</label>
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Che tipo di finish preferisci?</label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="foundation_finish" id="finish_opaco" value="opaco">
-              <label for="finish_opaco">Opaco</label>
+        
+        <div class="question-group">
+          <div class="question-label">
+            Che finish preferisci?
+            <button class="help-btn" onclick="showAssistant('finish_makeup')">?</button>
+          </div>
+          <div class="pill-options">
+            <div class="pill-option">
+              <input type="radio" name="finish" id="finish_matte" value="matte">
+              <label for="finish_matte">Matte / Opaco</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="foundation_finish" id="finish_luminoso" value="luminoso">
-              <label for="finish_luminoso">Luminoso</label>
+            <div class="pill-option">
+              <input type="radio" name="finish" id="finish_satin" value="satinato">
+              <label for="finish_satin">Satinato</label>
             </div>
-            <div class="radio-option">
-              <input type="radio" name="foundation_finish" id="finish_naturale" value="naturale">
-              <label for="finish_naturale">Naturale/satinato</label>
+            <div class="pill-option">
+              <input type="radio" name="finish" id="finish_dewy" value="luminoso">
+              <label for="finish_dewy">Luminoso / Glow</label>
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Che colori preferisci per gli ombretti? (seleziona tutti)</label>
-          <div class="checkbox-group">
+        
+        <div class="question-group">
+          <div class="question-label">
+            Quali esigenze specifiche hai?
+            <button class="help-btn" onclick="showAssistant('esigenze_makeup')">?</button>
+          </div>
+          <div class="checkbox-grid">
             <div class="checkbox-option">
-              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_nude" value="nude">
-              <label for="eyeshadow_nude">Nude/Neutri</label>
+              <input type="checkbox" name="needs" id="need_vegan" value="vegan">
+              <label for="need_vegan">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Prodotti vegani
+              </label>
             </div>
             <div class="checkbox-option">
-              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_caldi" value="caldi">
-              <label for="eyeshadow_caldi">Colori caldi</label>
+              <input type="checkbox" name="needs" id="need_noncomedogenic" value="non_comedogenico">
+              <label for="need_noncomedogenic">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Non comedogenico
+              </label>
             </div>
             <div class="checkbox-option">
-              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_freddi" value="freddi">
-              <label for="eyeshadow_freddi">Colori freddi</label>
+              <input type="checkbox" name="needs" id="need_longwear" value="lunga_tenuta">
+              <label for="need_longwear">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Lunga tenuta
+              </label>
             </div>
             <div class="checkbox-option">
-              <input type="checkbox" name="eyeshadow_colors" id="eyeshadow_accesi" value="accesi">
-              <label for="eyeshadow_accesi">Colori accesi</label>
+              <input type="checkbox" name="needs" id="need_hydrating" value="idratante">
+              <label for="need_hydrating">
+                <span class="check-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                Idratante
+              </label>
             </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Che texture preferisci nei prodotti viso?</label>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input type="radio" name="texture_preference" id="texture_liquidi" value="liquidi">
-              <label for="texture_liquidi">Liquidi</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="texture_preference" id="texture_crema" value="crema">
-              <label for="texture_crema">In crema</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="texture_preference" id="texture_polvere" value="polvere">
-              <label for="texture_polvere">In polvere</label>
-            </div>
-            <div class="radio-option">
-              <input type="radio" name="texture_preference" id="texture_stick" value="stick">
-              <label for="texture_stick">Stick</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Hai esigenze specifiche? (seleziona tutte)</label>
-          <div class="checkbox-group">
-            <div class="checkbox-option">
-              <input type="checkbox" name="makeup_needs" id="need_vegan" value="vegan">
-              <label for="need_vegan">Vegan</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="makeup_needs" id="need_noncomedogeno" value="non_comedogeno">
-              <label for="need_noncomedogeno">Non comedogeno</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="makeup_needs" id="need_lunga_tenuta" value="lunga_tenuta">
-              <label for="need_lunga_tenuta">Lunga tenuta</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="makeup_needs" id="need_idratante" value="idratante">
-              <label for="need_idratante">Idratante</label>
-            </div>
-            <div class="checkbox-option">
-              <input type="checkbox" name="makeup_needs" id="need_nessuna" value="nessuna">
-              <label for="need_nessuna">Nessuna particolare</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-group">
-          <button class="btn btn-back" onclick="prevStep()">← Indietro</button>
-          <button class="btn btn-primary" onclick="completeQuestionnaire()">Completa e Continua →</button>
+        
+        <div class="quiz-nav">
+          <button class="btn-back" onclick="goToStep(2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Indietro
+          </button>
+          <button class="btn-next" onclick="submitQuestionnaire()">
+            Completa
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
   </div>
-
+  
   <!-- Assistant Modal -->
   <div class="assistant-modal" id="assistantModal">
     <div class="assistant-content">
-      <div class="assistant-header">
-        <h3 style="color: var(--dark);">🤖 Assistente SkinAI</h3>
-        <button class="assistant-close" onclick="closeAssistant()">&times;</button>
+      <button class="assistant-close" onclick="closeAssistant()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="assistant-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
       </div>
-      <div id="assistantAnswer" class="assistant-answer">
+      <h3 class="assistant-title">Assistente SkinAI</h3>
+      <div id="assistantResponse" class="assistant-text">
         <div class="assistant-loading">
           <div class="spinner"></div>
-          <span>Sto elaborando la risposta...</span>
         </div>
       </div>
     </div>
   </div>
-
+  
   <script src="js/api.js"></script>
   <script>
-    let currentStep = 1;
-    const totalSteps = 3;
-    
-    // Pre-fill questionnaire if exists
-    async function loadPreviousQuestionnaire() {
-      try {
-        const data = await api.getLastQuestionnaire();
-        if (data && data.data) {
-          const q = data.data;
-          
-          // Fill radio buttons
-          if (q.skin_behavior) document.querySelector(`input[name="skin_behavior"][value="${q.skin_behavior}"]`)?.click();
-          if (q.morning_skin) document.querySelector(`input[name="morning_skin"][value="${q.morning_skin}"]`)?.click();
-          if (q.after_cleansing) document.querySelector(`input[name="after_cleansing"][value="${q.after_cleansing}"]`)?.click();
-          if (q.sensitive_skin) document.querySelector(`input[name="sensitive_skin"][value="${q.sensitive_skin}"]`)?.click();
-          if (q.sun_reaction) document.querySelector(`input[name="sun_reaction"][value="${q.sun_reaction}"]`)?.click();
-          if (q.vein_color) document.querySelector(`input[name="vein_color"][value="${q.vein_color}"]`)?.click();
-          if (q.foundation_coverage) document.querySelector(`input[name="foundation_coverage"][value="${q.foundation_coverage}"]`)?.click();
-          if (q.foundation_finish) document.querySelector(`input[name="foundation_finish"][value="${q.foundation_finish}"]`)?.click();
-          if (q.texture_preference) document.querySelector(`input[name="texture_preference"][value="${q.texture_preference}"]`)?.click();
-          
-          // Fill selects
-          if (q.water_intake) document.getElementById('water_intake').value = q.water_intake;
-          if (q.hair_color) document.getElementById('hair_color').value = q.hair_color;
-          if (q.skin_color) document.getElementById('skin_color').value = q.skin_color;
-          if (q.eye_color) document.getElementById('eye_color').value = q.eye_color;
-          
-          // Fill checkboxes
-          if (q.concerns) {
-            q.concerns.forEach(c => {
-              const cb = document.querySelector(`input[name="concerns"][value="${c}"]`);
-              if (cb) cb.checked = true;
-            });
-          }
-          if (q.eyeshadow_colors) {
-            q.eyeshadow_colors.forEach(c => {
-              const cb = document.querySelector(`input[name="eyeshadow_colors"][value="${c}"]`);
-              if (cb) cb.checked = true;
-            });
-          }
-          if (q.makeup_needs) {
-            q.makeup_needs.forEach(c => {
-              const cb = document.querySelector(`input[name="makeup_needs"][value="${c}"]`);
-              if (cb) cb.checked = true;
-            });
-          }
-        }
-      } catch (e) {
-        console.log('No previous questionnaire');
-      }
-    }
-    
-    // Load on page load
-    if (api.isAuthenticated()) {
-      loadPreviousQuestionnaire();
-    } else {
+    // Check auth
+    if (!api.isAuthenticated()) {
       window.location.href = 'auth.html';
     }
     
-    function nextStep() {
-      if (currentStep < totalSteps) {
-        document.getElementById(`step-${currentStep}`).classList.remove('active');
-        document.getElementById(`dot-${currentStep}`).classList.remove('active');
-        document.getElementById(`dot-${currentStep}`).classList.add('completed');
+    let currentStep = 1;
+    
+    // Navigation
+    function goToStep(step) {
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      
+      for (let i = 1; i <= 3; i++) {
+        const circle = document.getElementById(`step-circle-${i}`);
+        const line = document.getElementById(`step-line-${i}`);
         
-        currentStep++;
-        
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-        document.getElementById(`dot-${currentStep}`).classList.add('active');
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (i < step) {
+          circle.classList.remove('active');
+          circle.classList.add('completed');
+          circle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          if (line) line.classList.add('completed');
+        } else if (i === step) {
+          circle.classList.remove('completed');
+          circle.classList.add('active');
+          circle.textContent = i;
+        } else {
+          circle.classList.remove('active', 'completed');
+          circle.textContent = i;
+          if (line) line.classList.remove('completed');
+        }
       }
+      
+      currentStep = step;
+      document.getElementById(`step-${step}`).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
-    function prevStep() {
-      if (currentStep > 1) {
-        document.getElementById(`step-${currentStep}`).classList.remove('active');
-        document.getElementById(`dot-${currentStep}`).classList.remove('active');
-        
-        currentStep--;
-        
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-        document.getElementById(`dot-${currentStep}`).classList.remove('completed');
-        document.getElementById(`dot-${currentStep}`).classList.add('active');
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-    
-    function getFormData() {
-      // Get all form values
-      const data = {
-        // Step 1 - Skincare
+    // Collect form data
+    function collectFormData() {
+      return {
         skin_behavior: document.querySelector('input[name="skin_behavior"]:checked')?.value || '',
         morning_skin: document.querySelector('input[name="morning_skin"]:checked')?.value || '',
         after_cleansing: document.querySelector('input[name="after_cleansing"]:checked')?.value || '',
-        sensitive_skin: document.querySelector('input[name="sensitive_skin"]:checked')?.value || '',
-        concerns: Array.from(document.querySelectorAll('input[name="concerns"]:checked')).map(cb => cb.value),
-        water_intake: document.getElementById('water_intake').value,
-        
-        // Step 2 - Armocromia
-        hair_color: document.getElementById('hair_color').value,
-        skin_color: document.getElementById('skin_color').value,
-        eye_color: document.getElementById('eye_color').value,
+        concerns: Array.from(document.querySelectorAll('input[name="concerns"]:checked')).map(el => el.value),
+        water_intake: document.getElementById('water_intake')?.value || '',
+        hair_color: document.querySelector('input[name="hair_color"]:checked')?.value || '',
+        eye_color: document.querySelector('input[name="eye_color"]:checked')?.value || '',
         sun_reaction: document.querySelector('input[name="sun_reaction"]:checked')?.value || '',
         vein_color: document.querySelector('input[name="vein_color"]:checked')?.value || '',
-        
-        // Step 3 - Make-up
-        foundation_coverage: document.querySelector('input[name="foundation_coverage"]:checked')?.value || '',
-        foundation_finish: document.querySelector('input[name="foundation_finish"]:checked')?.value || '',
-        eyeshadow_colors: Array.from(document.querySelectorAll('input[name="eyeshadow_colors"]:checked')).map(cb => cb.value),
-        texture_preference: document.querySelector('input[name="texture_preference"]:checked')?.value || '',
-        makeup_needs: Array.from(document.querySelectorAll('input[name="makeup_needs"]:checked')).map(cb => cb.value)
+        coverage: document.querySelector('input[name="coverage"]:checked')?.value || '',
+        finish: document.querySelector('input[name="finish"]:checked')?.value || '',
+        needs: Array.from(document.querySelectorAll('input[name="needs"]:checked')).map(el => el.value)
       };
-      
-      return data;
     }
     
-    async function completeQuestionnaire() {
-      const data = getFormData();
+    // Submit questionnaire
+    async function submitQuestionnaire() {
+      const data = collectFormData();
       
       try {
         await api.submitQuestionnaire(data);
-        alert('Questionario salvato! Ora procedi al caricamento delle foto.');
+        localStorage.setItem('skinai_questionnaire_completed', 'true');
         window.location.href = 'upload.html';
       } catch (error) {
-        alert('Errore nel salvataggio: ' + error.message);
+        console.error('Submit error:', error);
+        alert('Errore nel salvataggio. Riprova.');
       }
     }
     
-    // Assistant functions
-    async function askAssistant(question, context) {
-      document.getElementById('assistantModal').classList.add('active');
-      document.getElementById('assistantAnswer').innerHTML = `
-        <div class="assistant-loading">
-          <div class="spinner"></div>
-          <span>Sto elaborando la risposta...</span>
-        </div>
-      `;
+    // Assistant
+    const assistantResponses = {
+      'comportamento_giorno': 'Osserva la tua pelle verso metà giornata, senza aver applicato prodotti. Se noti lucidità sulla zona T (fronte, naso, mento), la tua pelle tende ad essere grassa. Se senti tirare o vedi zone secche, è secca. Se alcune zone sono lucide e altre secche, è mista.',
+      'pelle_mattino': 'Appena sveglia, prima di lavarti il viso, osserva come appare la tua pelle. Questo ti aiuta a capire come la tua pelle si comporta naturalmente durante la notte.',
+      'dopo_detersione': 'Dopo aver lavato il viso con un detergente delicato, aspetta 15-20 minuti senza applicare nulla. Se la pelle tira o brucia, potrebbe essere sensibile o secca. Se si arrossa, potrebbe essere reattiva.',
+      'problematiche': 'Seleziona tutte le problematiche che noti sulla tua pelle. Questo ci aiuterà a personalizzare i consigli skincare e i prodotti consigliati.',
+      'acqua': 'L\'idratazione interna è fondamentale per la salute della pelle. Bere almeno 1.5-2 litri di acqua al giorno aiuta a mantenere la pelle idratata dall\'interno.',
+      'colore_capelli': 'Considera il tuo colore naturale dei capelli, non quello tinto. Se li tingi da molto tempo, pensa al colore che avevi da bambina/ragazza.',
+      'colore_occhi': 'Il colore degli occhi è importante per determinare la tua armocromia e i colori di make-up che ti valorizzano di più.',
+      'reazione_sole': 'Pensa a come reagisce la tua pelle dopo un\'esposizione al sole senza protezione. Ti scotti facilmente o ti abbronzi?',
+      'colore_vene': 'Guarda le vene all\'interno del polso alla luce naturale. Se appaiono blu/viola hai un sottotono freddo, se verdi hai un sottotono caldo, se vedi entrambi sei neutra.',
+      'coprenza_fondotinta': 'La coprenza leggera lascia trasparire la pelle naturale, quella media copre imperfezioni lievi, quella alta copre tutto uniformando completamente.',
+      'finish_makeup': 'Il finish matte è opaco e controlla la lucidità. Il satinato è naturale con un leggero glow. Il luminoso/dewy dà un effetto pelle bagnata e radiosa.',
+      'esigenze_makeup': 'Seleziona le caratteristiche che cerchi nei prodotti. Questo ci aiuterà a consigliarti prodotti adatti alle tue esigenze specifiche.'
+    };
+    
+    async function showAssistant(topic) {
+      const modal = document.getElementById('assistantModal');
+      const responseDiv = document.getElementById('assistantResponse');
       
-      try {
-        const response = await api.askAssistant(question, context);
-        document.getElementById('assistantAnswer').innerHTML = response.answer;
-      } catch (error) {
-        document.getElementById('assistantAnswer').innerHTML = 'Mi dispiace, non sono riuscito a elaborare la risposta. Riprova più tardi.';
+      modal.classList.add('active');
+      responseDiv.innerHTML = '<div class="assistant-loading"><div class="spinner"></div></div>';
+      
+      if (assistantResponses[topic]) {
+        setTimeout(() => {
+          responseDiv.textContent = assistantResponses[topic];
+        }, 300);
+      } else {
+        try {
+          const response = await api.askAssistant(topic, 'questionario skincare');
+          responseDiv.textContent = response.answer || 'Non ho una risposta per questa domanda.';
+        } catch (error) {
+          responseDiv.textContent = 'Errore nel caricamento della risposta.';
+        }
       }
     }
     
@@ -840,10 +1155,41 @@
       document.getElementById('assistantModal').classList.remove('active');
     }
     
-    // Close modal on outside click
     document.getElementById('assistantModal').addEventListener('click', function(e) {
       if (e.target === this) closeAssistant();
     });
+    
+    // Load previous questionnaire data
+    async function loadPreviousData() {
+      try {
+        const lastQ = await api.getLastQuestionnaire();
+        if (lastQ && lastQ.data) {
+          const d = lastQ.data;
+          // Pre-fill radio buttons
+          ['skin_behavior', 'morning_skin', 'after_cleansing', 'hair_color', 'eye_color', 'sun_reaction', 'vein_color', 'coverage', 'finish'].forEach(name => {
+            if (d[name]) {
+              const el = document.querySelector(`input[name="${name}"][value="${d[name]}"]`);
+              if (el) el.checked = true;
+            }
+          });
+          // Pre-fill checkboxes
+          ['concerns', 'needs'].forEach(name => {
+            if (d[name] && Array.isArray(d[name])) {
+              d[name].forEach(val => {
+                const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                if (el) el.checked = true;
+              });
+            }
+          });
+          // Pre-fill select
+          if (d.water_intake) document.getElementById('water_intake').value = d.water_intake;
+        }
+      } catch (error) {
+        console.log('No previous questionnaire found');
+      }
+    }
+    
+    loadPreviousData();
   </script>
 </body>
 </html>
