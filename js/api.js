@@ -25,6 +25,7 @@ class SkinAIAPI {
   saveToken(token) {
     this.token = token;
     localStorage.setItem('skinai_token', token);
+    console.log('[SkinAI] Token saved successfully');
   }
   
   // Clear token
@@ -32,11 +33,14 @@ class SkinAIAPI {
     this.token = null;
     localStorage.removeItem('skinai_token');
     localStorage.removeItem('skinai_user');
+    console.log('[SkinAI] Token cleared');
   }
   
   // Check if authenticated
   isAuthenticated() {
-    return !!this.token;
+    const hasToken = !!this.token;
+    console.log('[SkinAI] isAuthenticated:', hasToken);
+    return hasToken;
   }
   
   // Get current user from localStorage
@@ -56,6 +60,7 @@ class SkinAIAPI {
   
   async register(email, password, name) {
     try {
+      console.log('[SkinAI] Registering user:', email);
       const response = await fetch(`${this.baseURL}/auth/register`, {
         method: 'POST',
         headers: this.getHeaders(false),
@@ -76,15 +81,17 @@ class SkinAIAPI {
       this.saveToken(data.token.access_token);
       this.saveUser(data.user);
       
+      console.log('[SkinAI] Registration successful');
       return data;
     } catch (error) {
-      console.error('Register error:', error);
+      console.error('[SkinAI] Register error:', error);
       throw error;
     }
   }
   
   async login(email, password) {
     try {
+      console.log('[SkinAI] Logging in user:', email);
       const response = await fetch(`${this.baseURL}/auth/login`, {
         method: 'POST',
         headers: this.getHeaders(false),
@@ -104,9 +111,10 @@ class SkinAIAPI {
       this.saveToken(data.token.access_token);
       this.saveUser(data.user);
       
+      console.log('[SkinAI] Login successful');
       return data;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[SkinAI] Login error:', error);
       throw error;
     }
   }
@@ -126,7 +134,7 @@ class SkinAIAPI {
       
       return user;
     } catch (error) {
-      console.error('Get me error:', error);
+      console.error('[SkinAI] Get me error:', error);
       this.clearToken();
       throw error;
     }
@@ -143,21 +151,43 @@ class SkinAIAPI {
   
   async submitQuestionnaire(data) {
     try {
-      // CORRETTO: era /api/questionnaire/submit, ora è /questionnaire
+      console.log('[SkinAI] Submitting questionnaire...');
+      console.log('[SkinAI] Token present:', !!this.token);
+      console.log('[SkinAI] Data:', JSON.stringify(data));
+      
+      if (!this.token) {
+        throw new Error('Non sei autenticato. Effettua il login e riprova.');
+      }
+      
       const response = await fetch(`${this.baseURL}/questionnaire`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
       });
       
+      console.log('[SkinAI] Response status:', response.status);
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Failed to submit questionnaire');
+        const errorText = await response.text();
+        console.error('[SkinAI] Error response:', errorText);
+        
+        try {
+          const error = JSON.parse(errorText);
+          if (error.detail === 'Unauthorized') {
+            this.clearToken();
+            throw new Error('Sessione scaduta. Effettua nuovamente il login.');
+          }
+          throw new Error(error.detail || 'Errore nel salvataggio del questionario');
+        } catch (parseError) {
+          throw new Error('Errore di connessione al server. Riprova.');
+        }
       }
       
-      return await response.json();
+      const result = await response.json();
+      console.log('[SkinAI] Questionnaire saved successfully:', result);
+      return result;
     } catch (error) {
-      console.error('Submit questionnaire error:', error);
+      console.error('[SkinAI] Submit questionnaire error:', error);
       throw error;
     }
   }
@@ -174,24 +204,28 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Get questionnaire error:', error);
+      console.error('[SkinAI] Get questionnaire error:', error);
       return null;
     }
   }
   
   async getLastQuestionnaire() {
     try {
+      console.log('[SkinAI] Getting last questionnaire...');
       const response = await fetch(`${this.baseURL}/questionnaire/last`, {
         headers: this.getHeaders()
       });
       
       if (!response.ok) {
+        console.log('[SkinAI] No previous questionnaire found');
         return null;
       }
       
-      return await response.json();
+      const data = await response.json();
+      console.log('[SkinAI] Last questionnaire:', data);
+      return data;
     } catch (error) {
-      console.error('Get last questionnaire error:', error);
+      console.error('[SkinAI] Get last questionnaire error:', error);
       return null;
     }
   }
@@ -210,7 +244,7 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Ask assistant error:', error);
+      console.error('[SkinAI] Ask assistant error:', error);
       throw error;
     }
   }
@@ -221,10 +255,10 @@ class SkinAIAPI {
   
   async analyzePhoto(file) {
     try {
+      console.log('[SkinAI] Analyzing photo...');
       const formData = new FormData();
       formData.append('file', file);
       
-      // CORRETTO: era /api/sam/analyze-photo, ora è /analyze
       const response = await fetch(`${this.baseURL}/analyze`, {
         method: 'POST',
         headers: {
@@ -239,13 +273,14 @@ class SkinAIAPI {
       }
       
       const result = await response.json();
+      console.log('[SkinAI] Analysis complete');
       
       // Save to localStorage for report page
       localStorage.setItem('skinai_latest_analysis', JSON.stringify(result));
       
       return result;
     } catch (error) {
-      console.error('Analyze photo error:', error);
+      console.error('[SkinAI] Analyze photo error:', error);
       throw error;
     }
   }
@@ -267,7 +302,7 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Get analyses error:', error);
+      console.error('[SkinAI] Get analyses error:', error);
       return [];
     }
   }
@@ -284,7 +319,7 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Get analysis error:', error);
+      console.error('[SkinAI] Get analysis error:', error);
       return null;
     }
   }
@@ -307,7 +342,7 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Create diary entry error:', error);
+      console.error('[SkinAI] Create diary entry error:', error);
       throw error;
     }
   }
@@ -324,7 +359,7 @@ class SkinAIAPI {
       
       return await response.json();
     } catch (error) {
-      console.error('Get diary entries error:', error);
+      console.error('[SkinAI] Get diary entries error:', error);
       return [];
     }
   }
@@ -336,6 +371,7 @@ const api = new SkinAIAPI();
 // Auth guard for protected pages
 function requireAuth() {
   if (!api.isAuthenticated()) {
+    console.log('[SkinAI] Auth required, redirecting to login...');
     window.location.href = '/auth.html';
     return false;
   }
