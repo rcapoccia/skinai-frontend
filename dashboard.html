@@ -203,7 +203,7 @@
       <div class="nav-links">
         <a href="profilo.html">Profilo</a>
         <a href="faq.html">FAQ</a>
-        <a href="index.html">Esci</a>
+        <a href="#" onclick="logout()">Esci</a>
       </div>
     </nav>
   </header>
@@ -211,7 +211,7 @@
   <main class="dashboard-main">
     <div class="container">
       <div class="welcome-section">
-        <h1>Benvenuta, Maria!</h1>
+        <h1>Benvenuta, <span id="user-name">Utente</span>!</h1>
         <p style="font-size: 1.125rem; color: var(--gray-600);">
           Ecco il tuo percorso verso una pelle perfetta
         </p>
@@ -319,6 +319,38 @@
     </div>
   </main>
   <script src="js/api.js"></script>
+  <script>
+    // Check auth on page load
+    if (!api.isAuthenticated()) {
+      window.location.href = 'auth.html';
+    }
+    
+    // Load user name
+    const user = api.getCurrentUser();
+    if (user && user.full_name) {
+      document.getElementById('user-name').textContent = user.full_name;
+    }
+    
+    // Load latest analysis if available
+    const latestAnalysis = localStorage.getItem('skinai_latest_analysis');
+    if (latestAnalysis) {
+      try {
+        const analysis = JSON.parse(latestAnalysis);
+        // Update metrics if available
+        if (analysis.metrics) {
+          // Update UI with real metrics
+        }
+      } catch (e) {
+        console.error('Error loading analysis:', e);
+      }
+    }
+    
+    // Logout function
+    function logout() {
+      api.clearToken();
+      window.location.href = 'index.html';
+    }
+  </script>
   <script src="js/assistant.js"></script>
 </body>
 </html>
