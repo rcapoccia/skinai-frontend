@@ -256,8 +256,15 @@ class SkinAIAPI {
   async analyzePhoto(file) {
     try {
       console.log('[SkinAI] Analyzing photo...');
+      console.log('[SkinAI] Token present:', !!this.token);
+      
+      if (!this.token) {
+        throw new Error('Non sei autenticato. Effettua il login e riprova.');
+      }
+      
       const formData = new FormData();
-      formData.append('file', file);
+      // Il backend richiede un array di foto con campo 'photos'
+      formData.append('photos', file);
       
       const response = await fetch(`${this.baseURL}/analyze`, {
         method: 'POST',
@@ -267,9 +274,24 @@ class SkinAIAPI {
         body: formData
       });
       
+      console.log('[SkinAI] Analyze response status:', response.status);
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Analysis failed');
+        const errorText = await response.text();
+        console.error('[SkinAI] Analyze error response:', errorText);
+        try {
+          const error = JSON.parse(errorText);
+          if (error.detail === 'Unauthorized' || error.detail === 'Not authenticated') {
+            this.clearToken();
+            throw new Error('Sessione scaduta. Effettua nuovamente il login.');
+          }
+          throw new Error(error.detail || 'Errore durante l\'analisi');
+        } catch (parseError) {
+          if (parseError.message.includes('Sessione') || parseError.message.includes('autenticato')) {
+            throw parseError;
+          }
+          throw new Error('Errore di connessione al server. Riprova.');
+        }
       }
       
       const result = await response.json();

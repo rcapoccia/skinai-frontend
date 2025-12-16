@@ -569,7 +569,64 @@
       } catch (e) { console.log('[SkinAI] No previous questionnaire found'); }
     }
     loadPreviousData();
+    function validateSection(sectionNum) {
+      if (sectionNum === 1) {
+        const skinBehavior = document.querySelector('input[name="skin_behavior"]:checked');
+        const morningSkin = document.querySelector('input[name="morning_skin"]:checked');
+        const afterCleansing = document.querySelector('input[name="after_cleansing"]:checked');
+        
+        if (!skinBehavior) {
+          showMessage('Seleziona come si comporta la tua pelle durante il giorno', 'error');
+          return false;
+        }
+        if (!morningSkin) {
+          showMessage('Seleziona come è la tua pelle al mattino', 'error');
+          return false;
+        }
+        if (!afterCleansing) {
+          showMessage('Seleziona come reagisce la pelle dopo la detersione', 'error');
+          return false;
+        }
+      }
+      if (sectionNum === 2) {
+        const hairColor = document.querySelector('input[name="hair_color"]:checked');
+        const eyeColor = document.querySelector('input[name="eye_color"]:checked');
+        const sunReaction = document.querySelector('input[name="sun_reaction"]:checked');
+        const veinColor = document.querySelector('input[name="vein_color"]:checked');
+        
+        if (!hairColor) {
+          showMessage('Seleziona il colore dei tuoi capelli', 'error');
+          return false;
+        }
+        if (!eyeColor) {
+          showMessage('Seleziona il colore dei tuoi occhi', 'error');
+          return false;
+        }
+        if (!sunReaction) {
+          showMessage('Seleziona come reagisce la tua pelle al sole', 'error');
+          return false;
+        }
+        if (!veinColor) {
+          showMessage('Seleziona il colore delle vene del polso', 'error');
+          return false;
+        }
+      }
+      if (sectionNum === 3) {
+        const usesMakeup = document.querySelector('input[name="uses_makeup"]:checked');
+        if (!usesMakeup) {
+          showMessage('Indica se usi il make-up o meno', 'error');
+          return false;
+        }
+      }
+      return true;
+    }
+    
     function nextSection(num) {
+      // Valida la sezione corrente prima di procedere
+      if (!validateSection(currentSection)) {
+        return;
+      }
+      
       document.getElementById(`section-${currentSection}`).classList.remove('active');
       document.getElementById(`section-${num}`).classList.add('active');
       document.getElementById(`step-circle-${currentSection}`).classList.remove('active');
@@ -610,6 +667,11 @@
       };
     }
     async function submitQuestionnaire() {
+      // Valida la sezione make-up prima di procedere
+      if (!validateSection(3)) {
+        return;
+      }
+      
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="loading-spinner"></span> Salvataggio...';
