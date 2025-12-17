@@ -159,7 +159,7 @@ class SkinAIAPI {
         throw new Error('Non sei autenticato. Effettua il login e riprova.');
       }
       
-      const response = await fetch(`${this.baseURL}/questionnaire`, {
+      const response = await fetch(`${this.baseURL}/questionnaire/submit`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
