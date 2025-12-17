@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'https://164-90-171-42.nip.io/api';
+const API_BASE_URL = 'https://164-90-171-42.nip.io';
 
 // API Helper Class
 class SkinAIAPI {
@@ -159,7 +159,7 @@ class SkinAIAPI {
         throw new Error('Non sei autenticato. Effettua il login e riprova.');
       }
       
-      const response = await fetch(`${this.baseURL}/questionnaire/submit`, {
+      const response = await fetch(`${this.baseURL}/api/questionnaire/submit`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(data)
@@ -266,7 +266,7 @@ class SkinAIAPI {
       // Il backend richiede campo 'file'
       formData.append('file', file);
       
-      const response = await fetch(`${this.baseURL}/sam/analyze-photo`, {
+      const response = await fetch(`${this.baseURL}/api/sam/analyze-photo`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.token}`
@@ -314,7 +314,7 @@ class SkinAIAPI {
   
   async getAnalyses() {
     try {
-      const response = await fetch(`${this.baseURL}/sam/analyses`, {
+      const response = await fetch(`${this.baseURL}/api/sam/analyses`, {
         headers: this.getHeaders()
       });
       
@@ -330,9 +330,7 @@ class SkinAIAPI {
   }
   
   async getAnalysis(id) {
-    try {
-      const response = await fetch(`${this.baseURL}/sam/analyses/${id}`, {
-        headers: this.getHeaders()
+    try {      const response = await fetch(`${this.baseURL}/api/sam/analyses/${analysisId}`, {  headers: this.getHeaders()
       });
       
       if (!response.ok) {
