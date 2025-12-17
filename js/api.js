@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'https://164.90.171.42.nip.io';
+const API_BASE_URL = 'https://164-90-171-42.nip.io/api';
 
 // API Helper Class
 class SkinAIAPI {
