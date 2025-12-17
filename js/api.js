@@ -194,7 +194,7 @@ class SkinAIAPI {
   
   async getQuestionnaire() {
     try {
-      const response = await fetch(`${this.baseURL}/questionnaire/me`, {
+      const response = await fetch(`${this.baseURL}/questionnaires/me`, {
         headers: this.getHeaders()
       });
       
@@ -210,24 +210,8 @@ class SkinAIAPI {
   }
   
   async getLastQuestionnaire() {
-    try {
-      console.log('[SkinAI] Getting last questionnaire...');
-      const response = await fetch(`${this.baseURL}/questionnaire/last`, {
-        headers: this.getHeaders()
-      });
-      
-      if (!response.ok) {
-        console.log('[SkinAI] No previous questionnaire found');
-        return null;
-      }
-      
-      const data = await response.json();
-      console.log('[SkinAI] Last questionnaire:', data);
-      return data;
-    } catch (error) {
-      console.error('[SkinAI] Get last questionnaire error:', error);
-      return null;
-    }
+    // Endpoint non disponibile nel backend, usa getQuestionnaire invece
+    return this.getQuestionnaire();
   }
   
   async askAssistant(question, context) {
@@ -330,7 +314,9 @@ class SkinAIAPI {
   }
   
   async getAnalysis(id) {
-    try {      const response = await fetch(`${this.baseURL}/api/sam/analyses/${analysisId}`, {  headers: this.getHeaders()
+    try {
+      const response = await fetch(`${this.baseURL}/api/sam/analyses/${id}`, {
+        headers: this.getHeaders()
       });
       
       if (!response.ok) {
