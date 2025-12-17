@@ -263,10 +263,10 @@ class SkinAIAPI {
       }
       
       const formData = new FormData();
-      // Il backend richiede un array di foto con campo 'photos'
-      formData.append('photos', file);
+      // Il backend richiede campo 'file'
+      formData.append('file', file);
       
-      const response = await fetch(`${this.baseURL}/analyze`, {
+      const response = await fetch(`${this.baseURL}/sam/analyze-photo`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.token}`
@@ -314,7 +314,7 @@ class SkinAIAPI {
   
   async getAnalyses() {
     try {
-      const response = await fetch(`${this.baseURL}/analyses`, {
+      const response = await fetch(`${this.baseURL}/sam/analyses`, {
         headers: this.getHeaders()
       });
       
@@ -331,7 +331,7 @@ class SkinAIAPI {
   
   async getAnalysis(id) {
     try {
-      const response = await fetch(`${this.baseURL}/analyses/${id}`, {
+      const response = await fetch(`${this.baseURL}/sam/analyses/${id}`, {
         headers: this.getHeaders()
       });
       
