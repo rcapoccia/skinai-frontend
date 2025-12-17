@@ -64,7 +64,7 @@ class SkinAIAPI {
       const response = await fetch(`${this.baseURL}/auth/register`, {
         method: 'POST',
         headers: this.getHeaders(false),
-        body: JSON.stringify({ email, password, full_name: name })
+        body: JSON.stringify({ email, password, name })
       });
       
       if (!response.ok) {
