@@ -327,8 +327,8 @@
     
     // Load user name
     const user = api.getCurrentUser();
-    if (user && user.full_name) {
-      document.getElementById('user-name').textContent = user.full_name;
+    if (user && user.name) {
+      document.getElementById('user-name').textContent = user.name;
     }
     
     // Load latest analysis if available

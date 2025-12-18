@@ -460,10 +460,15 @@
       const contentDiv = document.getElementById('reportContent');
       
       // First try to get from localStorage (just completed analysis)
+      console.log('[SkinAI DEBUG] Caricamento report...');
       let analysis = api.getLatestAnalysis();
+      console.log('[SkinAI DEBUG] Analisi caricata da localStorage:', analysis);
+      console.log('[SkinAI DEBUG] Analisi è null?', analysis === null);
+      console.log('[SkinAI DEBUG] Tipo analisi:', typeof analysis);
       
       // If not in localStorage, try to get from URL param or fetch latest
       if (!analysis) {
+        console.log('[SkinAI DEBUG] Nessuna analisi in localStorage, provo altre fonti...');
         const urlParams = new URLSearchParams(window.location.search);
         const analysisId = urlParams.get('id');
         

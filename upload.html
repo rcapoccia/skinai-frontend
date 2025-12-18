@@ -469,8 +469,19 @@
         // The backend will combine it with questionnaire data
         const result = await api.analyzePhoto(uploadedFiles.front);
         
+        // DEBUG: Log analysis result
+        console.log('[SkinAI DEBUG] Analisi ricevuta:', result);
+        console.log('[SkinAI DEBUG] Tipo result:', typeof result);
+        console.log('[SkinAI DEBUG] Result è null?', result === null);
+        
         // Save result and redirect to report
         localStorage.setItem('skinai_latest_analysis', JSON.stringify(result));
+        
+        // DEBUG: Verify save
+        const verificaSalvataggio = localStorage.getItem('skinai_latest_analysis');
+        console.log('[SkinAI DEBUG] Salvato in localStorage:', verificaSalvataggio ? 'OK' : 'FALLITO');
+        console.log('[SkinAI DEBUG] Contenuto salvato:', verificaSalvataggio ? verificaSalvataggio.substring(0, 100) + '...' : 'VUOTO');
+        
         window.location.href = 'report.html';
       } catch (error) {
         console.error('Analysis error:', error);
