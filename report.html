@@ -274,6 +274,34 @@
     }
     
     // Render metrics
+    // Render visual analysis from backend
+    function renderVisualAnalysis(visualAnalysis) {
+      if (!visualAnalysis) return '';
+      
+      const metrics = [
+        { key: 'wrinkles', label: 'Rughe', getValue: (v) => 100 - (v.severity || 0) },
+        { key: 'spots', label: 'Macchie', getValue: (v) => 100 - (v.severity || 0) },
+        { key: 'redness', label: 'Rossore', getValue: (v) => 100 - (v.severity || 0) },
+        { key: 'texture', label: 'Texture', getValue: (v) => v.smoothness || 50 },
+        { key: 'pores', label: 'Pori', getValue: (v) => 100 - (v.visibility || 0) }
+      ];
+      
+      return metrics.map(m => {
+        const data = visualAnalysis[m.key];
+        if (!data) return '';
+        
+        const value = Math.round(m.getValue(data));
+        const color = getScoreColor(value);
+        
+        return `
+          <div class="metric">
+            <div class="metric-circle" style="background: ${color};">${value}%</div>
+            <div class="metric-label">${m.label}</div>
+          </div>
+        `;
+      }).join('');
+    }
+    
     function renderMetrics(metrics) {
       if (!metrics) return '';
       
@@ -342,22 +370,37 @@
     function renderReport(analysis) {
       const data = analysis.result || analysis;
       
+      console.log('[SkinAI DEBUG] Rendering report con data:', data);
+      
       let html = '';
       
       // Skin Analysis Section
+      const skinType = data.skin_type || data.tipo_pelle;
+      const skinTypeText = skinType ? (skinType.primary_type || skinType) : null;
+      const overallScore = data.overall_score || 0;
+      
       html += `
         <div class="report-section">
           <h2 class="section-title">Analisi della Tua Pelle</h2>
-          <p class="section-subtitle">${data.tipo_pelle ? 'Tipo di pelle: <strong>' + data.tipo_pelle + '</strong>' : 'Ecco i risultati dell\'analisi'}</p>
+          <p class="section-subtitle">
+            ${skinTypeText ? 'Tipo di pelle: <strong>' + (skinTypeText.charAt(0).toUpperCase() + skinTypeText.slice(1)) + '</strong>' : 'Ecco i risultati dell\'analisi'}
+            ${overallScore > 0 ? ' - Punteggio generale: <strong>' + overallScore + '/100</strong>' : ''}
+          </p>
           
-          <div class="metrics-grid">
-            ${renderMetrics(data.metriche || data.punteggi)}
-          </div>
+          ${data.visual_analysis ? `
+            <div class="metrics-grid">
+              ${renderVisualAnalysis(data.visual_analysis)}
+            </div>
+          ` : (data.metriche || data.punteggi) ? `
+            <div class="metrics-grid">
+              ${renderMetrics(data.metriche || data.punteggi)}
+            </div>
+          ` : ''}
           
-          ${data.problematiche ? `
+          ${(data.detected_concerns || data.problematiche) ? `
             <div class="tip-box">
               <h4>🔍 Problematiche Rilevate</h4>
-              <p>${Array.isArray(data.problematiche) ? data.problematiche.join(', ') : data.problematiche}</p>
+              <p>${Array.isArray(data.detected_concerns || data.problematiche) ? (data.detected_concerns || data.problematiche).join(', ') : (data.detected_concerns || data.problematiche)}</p>
             </div>
           ` : ''}
         </div>
@@ -386,6 +429,28 @@
                 <p>${data.armocromia.consigli}</p>
               </div>
             ` : ''}
+          </div>
+        `;
+      }
+      
+      // AI Recommendations Section (from backend)
+      if (data.ai_recommendations) {
+        // Convert markdown to HTML (simple conversion)
+        const recommendationsHtml = data.ai_recommendations
+          .replace(/^## (.+)$/gm, '<h3 style="font-size: 1.25rem; margin: 1.5rem 0 1rem; color: var(--dark);">$1</h3>')
+          .replace(/^### (.+)$/gm, '<h4 style="font-size: 1.1rem; margin: 1rem 0 0.5rem; color: var(--dark);">$1</h4>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/^- (.+)$/gm, '<li style="margin-bottom: 0.5rem;">$1</li>')
+          .replace(/(<li.+<\/li>)/s, '<ul style="margin: 0.5rem 0 1rem 1.5rem;">$1</ul>')
+          .replace(/\n\n/g, '</p><p style="margin-bottom: 1rem;">')
+          .replace(/^(.+)$/gm, '<p style="margin-bottom: 1rem;">$1</p>');
+        
+        html += `
+          <div class="report-section">
+            <h2 class="section-title">Raccomandazioni Personalizzate</h2>
+            <div style="color: var(--gray-700); line-height: 1.6;">
+              ${recommendationsHtml}
+            </div>
           </div>
         `;
       }
