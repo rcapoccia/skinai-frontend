@@ -7,7 +7,7 @@ headers = []
 [functions."*"]
 
 [build]
-publish = "/home/ubuntu/github-skinai-frontend"
+publish = "."
 publishOrigin = "ui"
 
 [build.environment]
