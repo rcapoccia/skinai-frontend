@@ -142,9 +142,9 @@
       <!-- Personal Info -->
       <div class="profile-card">
         <div class="avatar-section">
-          <div class="avatar">MR</div>
-          <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem; color: var(--dark);">Maria Rossi</h2>
-          <p style="color: var(--gray-600);">maria.rossi@esempio.it</p>
+          <div class="avatar" id="user-avatar">...</div>
+          <h2 style="font-size: 1.75rem; margin-bottom: 0.25rem; color: var(--dark);" id="user-display-name">Caricamento...</h2>
+          <p style="color: var(--gray-600);" id="user-display-email">Caricamento...</p>
         </div>
         
         <h3 class="section-title">Informazioni Personali</h3>
@@ -153,19 +153,19 @@
           <div class="form-row">
             <div class="form-group">
               <label for="first-name">Nome</label>
-              <input type="text" id="first-name" class="form-input" value="Maria" required>
+              <input type="text" id="first-name" class="form-input" required>
             </div>
             
             <div class="form-group">
               <label for="last-name">Cognome</label>
-              <input type="text" id="last-name" class="form-input" value="Rossi" required>
+              <input type="text" id="last-name" class="form-input" required>
             </div>
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" class="form-input" value="maria.rossi@esempio.it" required>
+              <input type="email" id="email" class="form-input" required readonly>
             </div>
             
             <div class="form-group">
@@ -176,7 +176,7 @@
           
           <div class="form-group">
             <label for="birthdate">Data di nascita</label>
-            <input type="date" id="birthdate" class="form-input" value="1990-05-15">
+            <input type="date" id="birthdate" class="form-input">
           </div>
           
           <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
@@ -289,10 +289,66 @@
   </main>
   
   <script>
-    function saveProfile(e) {
+    const api = new SkinAIAPI();
+    
+    // Carica profilo utente
+    async function loadProfile() {
+      try {
+        const profile = await api.getUserProfile();
+        
+        // Aggiorna display
+        const nameParts = profile.name.split(' ');
+        const initials = nameParts.map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        document.getElementById('user-avatar').textContent = initials;
+        document.getElementById('user-display-name').textContent = profile.name;
+        document.getElementById('user-display-email').textContent = profile.email;
+        
+        // Popola form
+        if (nameParts.length >= 2) {
+          document.getElementById('first-name').value = nameParts[0];
+          document.getElementById('last-name').value = nameParts.slice(1).join(' ');
+        } else {
+          document.getElementById('first-name').value = profile.name;
+        }
+        
+        document.getElementById('email').value = profile.email;
+        
+        if (profile.phone) {
+          document.getElementById('phone').value = profile.phone;
+        }
+        
+        if (profile.birth_date) {
+          document.getElementById('birthdate').value = profile.birth_date;
+        }
+        
+      } catch (error) {
+        console.error('[SkinAI] Errore caricamento profilo:', error);
+        alert('Errore nel caricamento del profilo. Riprova.');
+      }
+    }
+    
+    async function saveProfile(e) {
       e.preventDefault();
-      // TODO: Save to backend
-      alert('Profilo aggiornato con successo!');
+      
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const phone = document.getElementById('phone').value;
+      const birthDate = document.getElementById('birthdate').value;
+      
+      const profileData = {
+        name: `${firstName} ${lastName}`.trim(),
+        phone: phone || null,
+        birth_date: birthDate || null
+      };
+      
+      try {
+        await api.updateUserProfile(profileData);
+        alert('Profilo aggiornato con successo!');
+        await loadProfile(); // Ricarica per mostrare i dati aggiornati
+      } catch (error) {
+        console.error('[SkinAI] Errore aggiornamento profilo:', error);
+        alert('Errore nell\'aggiornamento del profilo. Riprova.');
+      }
     }
     
     function changePassword(e) {
@@ -305,17 +361,19 @@
         return;
       }
       
-      // TODO: Save to backend
-      alert('Password cambiata con successo!');
+      // TODO: Implementare cambio password nel backend
+      alert('Funzionalità in arrivo!');
     }
     
     function deleteAccount() {
-      if (confirm('Sei sicura di voler eliminare il tuo account? Questa azione è irreversibile.')) {
-        // TODO: Delete account
-        alert('Account eliminato');
-        window.location.href = 'index.html';
+      if (confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.')) {
+        // TODO: Implementare eliminazione account
+        alert('Funzionalità in arrivo!');
       }
     }
+    
+    // Carica profilo all'avvio
+    loadProfile();
   </script>
   <script src="js/api.js"></script>
   <script src="js/assistant.js"></script>

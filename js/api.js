@@ -61,7 +61,7 @@ class SkinAIAPI {
   async register(email, password, name) {
     try {
       console.log('[SkinAI] Registering user:', email);
-      const response = await fetch(`${this.baseURL}/auth/register`, {
+      const response = await fetch(`${this.baseURL}/api/auth/register`, {
         method: 'POST',
         headers: this.getHeaders(false),
         body: JSON.stringify({ email, password, name })
@@ -92,7 +92,7 @@ class SkinAIAPI {
   async login(email, password) {
     try {
       console.log('[SkinAI] Logging in user:', email);
-      const response = await fetch(`${this.baseURL}/auth/login`, {
+      const response = await fetch(`${this.baseURL}/api/auth/login`, {
         method: 'POST',
         headers: this.getHeaders(false),
         body: JSON.stringify({ email, password })
@@ -327,6 +327,58 @@ class SkinAIAPI {
     } catch (error) {
       console.error('[SkinAI] Get analysis error:', error);
       return null;
+    }
+  }
+  
+  // ============================================================================
+  // USER PROFILE ENDPOINTS
+  // ============================================================================
+  
+  async getUserProfile() {
+    try {
+      console.log('[SkinAI] Getting user profile...');
+      const response = await fetch(`${this.baseURL}/api/user/profile`, {
+        headers: this.getHeaders()
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to get user profile');
+      }
+      
+      const profile = await response.json();
+      console.log('[SkinAI] Profile loaded:', profile);
+      return profile;
+    } catch (error) {
+      console.error('[SkinAI] Get user profile error:', error);
+      throw error;
+    }
+  }
+  
+  async updateUserProfile(profileData) {
+    try {
+      console.log('[SkinAI] Updating user profile...', profileData);
+      const response = await fetch(`${this.baseURL}/api/user/profile`, {
+        method: 'PUT',
+        headers: this.getHeaders(),
+        body: JSON.stringify(profileData)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update user profile');
+      }
+      
+      const result = await response.json();
+      console.log('[SkinAI] Profile updated:', result);
+      
+      // Update localStorage user data
+      if (result.user) {
+        this.saveUser(result.user);
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('[SkinAI] Update user profile error:', error);
+      throw error;
     }
   }
   
