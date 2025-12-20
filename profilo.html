@@ -304,12 +304,8 @@
         document.getElementById('user-display-email').textContent = profile.email;
         
         // Popola form
-        if (nameParts.length >= 2) {
-          document.getElementById('first-name').value = nameParts[0];
-          document.getElementById('last-name').value = nameParts.slice(1).join(' ');
-        } else {
-          document.getElementById('first-name').value = profile.name;
-        }
+        document.getElementById('first-name').value = profile.first_name || '';
+        document.getElementById('last-name').value = profile.last_name || '';
         
         document.getElementById('email').value = profile.email;
         
@@ -334,12 +330,8 @@
           document.getElementById('user-avatar').textContent = initials;
           document.getElementById('user-display-name').textContent = cachedUser.name;
           document.getElementById('user-display-email').textContent = cachedUser.email;
-          if (nameParts.length >= 2) {
-            document.getElementById('first-name').value = nameParts[0];
-            document.getElementById('last-name').value = nameParts.slice(1).join(' ');
-          } else {
-            document.getElementById('first-name').value = cachedUser.name;
-          }
+          document.getElementById('first-name').value = cachedUser.first_name || '';
+          document.getElementById('last-name').value = cachedUser.last_name || '';
           document.getElementById('email').value = cachedUser.email;
           if (cachedUser.phone) document.getElementById('phone').value = cachedUser.phone;
           if (cachedUser.birth_date) document.getElementById('birth-date').value = cachedUser.birth_date;
