@@ -323,6 +323,27 @@
         
       } catch (error) {
         console.error('[SkinAI] Errore caricamento profilo:', error);
+        // Mostra messaggio errore invece di "Caricamento..."
+        document.getElementById('user-display-name').textContent = 'Errore caricamento';
+        document.getElementById('user-display-email').textContent = 'Riprova più tardi';
+        // Prova a ricaricare user da localStorage come fallback
+        const cachedUser = api.getCurrentUser();
+        if (cachedUser) {
+          const nameParts = cachedUser.name.split(' ');
+          const initials = nameParts.map(n => n[0]).join('').toUpperCase().substring(0, 2);
+          document.getElementById('user-avatar').textContent = initials;
+          document.getElementById('user-display-name').textContent = cachedUser.name;
+          document.getElementById('user-display-email').textContent = cachedUser.email;
+          if (nameParts.length >= 2) {
+            document.getElementById('first-name').value = nameParts[0];
+            document.getElementById('last-name').value = nameParts.slice(1).join(' ');
+          } else {
+            document.getElementById('first-name').value = cachedUser.name;
+          }
+          document.getElementById('email').value = cachedUser.email;
+          if (cachedUser.phone) document.getElementById('phone').value = cachedUser.phone;
+          if (cachedUser.birth_date) document.getElementById('birth-date').value = cachedUser.birth_date;
+        }
         alert('Errore nel caricamento del profilo. Riprova.');
       }
     }

@@ -279,23 +279,57 @@
       if (!visualAnalysis) return '';
       
       const metrics = [
-        { key: 'wrinkles', label: 'Rughe', getValue: (v) => 100 - (v.severity || 0) },
-        { key: 'spots', label: 'Macchie', getValue: (v) => 100 - (v.severity || 0) },
-        { key: 'redness', label: 'Rossore', getValue: (v) => 100 - (v.severity || 0) },
-        { key: 'texture', label: 'Texture', getValue: (v) => v.smoothness || 50 },
-        { key: 'pores', label: 'Pori', getValue: (v) => 100 - (v.visibility || 0) }
+        { 
+          key: 'wrinkles', 
+          label: 'Rughe', 
+          getValue: (v) => v.severity || 0,
+          invert: true  // Basso = buono
+        },
+        { 
+          key: 'spots', 
+          label: 'Macchie', 
+          getValue: (v) => v.count || 0,
+          invert: true,
+          scale: 10  // Normalizza count (0-10) a percentuale
+        },
+        { 
+          key: 'redness', 
+          label: 'Rossore', 
+          getValue: (v) => v.level || 0,
+          invert: true  // Basso = buono
+        },
+        { 
+          key: 'texture', 
+          label: 'Texture', 
+          getValue: (v) => v.score || 50,
+          invert: false  // Alto = buono
+        },
+        { 
+          key: 'pores', 
+          label: 'Pori', 
+          getValue: (v) => v.visibility || 0,
+          invert: true  // Basso = buono
+        }
       ];
       
       return metrics.map(m => {
         const data = visualAnalysis[m.key];
         if (!data) return '';
         
-        const value = Math.round(m.getValue(data));
-        const color = getScoreColor(value);
+        let value = m.getValue(data);
+        
+        // Normalizza se necessario
+        if (m.scale) {
+          value = Math.min(100, value * m.scale);
+        }
+        
+        // Inverti per metriche dove basso = buono
+        const displayValue = Math.round(m.invert ? 100 - value : value);
+        const color = getScoreColor(displayValue);
         
         return `
           <div class="metric">
-            <div class="metric-circle" style="background: ${color};">${value}%</div>
+            <div class="metric-circle" style="background: ${color};">${displayValue}%</div>
             <div class="metric-label">${m.label}</div>
           </div>
         `;
