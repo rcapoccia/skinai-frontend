@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Completa il tuo Profilo - SkinAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      background: linear-gradient(135deg, #f5e6d3 0%, #d4a574 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background: white;
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+      width: 120px;
+      display: block;
+      margin: 0 auto 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #8b6f47;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #8b6f47;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    label .required {
+      color: #d4a574;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="date"] {
+      width: 100%;
+      padding: 0.875rem;
+      border: 2px solid #e5d4c1;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #d4a574;
+    }
+
+    .optional-hint {
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 0.25rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Cormorant Garamond', serif;
+      margin-top: 1rem;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(212, 165, 116, 0.3);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      color: #0369a1;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html"><img src="images/logo.png" alt="SkinAI" class="logo"></a>
+    
+    <h1>Completa il tuo Profilo</h1>
+    <p class="subtitle">Questi dati ci aiuteranno a personalizzare la tua analisi</p>
+
+    <div class="info-box">
+      ℹ️ I tuoi dati sono protetti e utilizzati solo per migliorare l'accuratezza dell'analisi della pelle.
+    </div>
+
+    <div class="error-message" id="error-message"></div>
+
+    <form id="complete-profile-form">
+      <div class="form-group">
+        <label for="first-name">Nome <span class="required">*</span></label>
+        <input type="text" id="first-name" required readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="last-name">Cognome <span class="required">*</span></label>
+        <input type="text" id="last-name" required placeholder="Inserisci il tuo cognome">
+      </div>
+
+      <div class="form-group">
+        <label for="birth-date">Data di Nascita <span class="required">*</span></label>
+        <input type="date" id="birth-date" required max="">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Telefono</label>
+        <input type="tel" id="phone" placeholder="+39 123 456 7890">
+        <div class="optional-hint">Opzionale - per eventuali comunicazioni importanti</div>
+      </div>
+
+      <button type="submit">Continua</button>
+    </form>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script>
+    // Imposta data massima (oggi) per il date picker
+    document.getElementById('birth-date').max = new Date().toISOString().split('T')[0];
+
+    // Carica nome dalla registrazione
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = api.getCurrentUser();
+      if (!user || !user.name) {
+        // Se non c'è utente loggato, redirect a auth
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      // Popola il nome (già inserito in registrazione)
+      const nameParts = user.name.trim().split(' ');
+      document.getElementById('first-name').value = nameParts[0];
+      
+      // Se il nome completo aveva già cognome, pre-compila
+      if (nameParts.length > 1) {
+        document.getElementById('last-name').value = nameParts.slice(1).join(' ');
+      }
+    });
+
+    // Gestione submit form
+    document.getElementById('complete-profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const birthDate = document.getElementById('birth-date').value;
+      const phone = document.getElementById('phone').value.trim();
+
+      // Validazione
+      if (!firstName || !lastName || !birthDate) {
+        showError('Per favore compila tutti i campi obbligatori');
+        return;
+      }
+
+      // Valida età minima (almeno 13 anni)
+      const birth = new Date(birthDate);
+      const today = new Date();
+      const age = Math.floor((today - birth) / 31557600000); // millisecondi in un anno
+      
+      if (age < 13) {
+        showError('Devi avere almeno 13 anni per utilizzare SkinAI');
+        return;
+      }
+
+      if (age > 120) {
+        showError('Per favore inserisci una data di nascita valida');
+        return;
+      }
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Salvataggio...';
+
+      try {
+        // Chiama API per completare profilo
+        await api.completeProfile({
+          first_name: firstName,
+          last_name: lastName,
+          birth_date: birthDate,
+          phone: phone || null
+        });
+
+        // Salva in localStorage per uso immediato
+        const user = api.getCurrentUser();
+        user.first_name = firstName;
+        user.last_name = lastName;
+        user.birth_date = birthDate;
+        user.phone = phone;
+        user.profile_completed = true;
+        localStorage.setItem('skinai_user', JSON.stringify(user));
+
+        // Redirect a dashboard
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        console.error('[SkinAI] Errore completamento profilo:', error);
+        showError(error.message || 'Errore durante il salvataggio. Riprova.');
+        btn.disabled = false;
+        btn.textContent = 'Continua';
+      }
+    });
+
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      
+      // Auto-hide dopo 5 secondi
+      setTimeout(() => {
+        errorDiv.classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -283,32 +283,36 @@
           key: 'wrinkles', 
           label: 'Rughe', 
           getValue: (v) => v.severity || 0,
-          invert: true  // Basso = buono
+          maxValue: 5,  // Backend: 0-5 scale
+          invert: true  // Basso = buono (poche rughe)
         },
         { 
           key: 'spots', 
           label: 'Macchie', 
           getValue: (v) => v.count || 0,
-          invert: true,
-          scale: 10  // Normalizza count (0-10) a percentuale
+          maxValue: 10,  // Backend: 0-10+ count
+          invert: true   // Basso = buono (poche macchie)
         },
         { 
           key: 'redness', 
           label: 'Rossore', 
           getValue: (v) => v.level || 0,
-          invert: true  // Basso = buono
+          maxValue: 5,  // Backend: 0-5 scale
+          invert: true  // Basso = buono (poco rossore)
         },
         { 
           key: 'texture', 
           label: 'Texture', 
           getValue: (v) => v.score || 50,
-          invert: false  // Alto = buono
+          maxValue: 100,  // Backend: 0-100 score
+          invert: false   // Alto = buono (texture liscia)
         },
         { 
           key: 'pores', 
           label: 'Pori', 
           getValue: (v) => v.visibility || 0,
-          invert: true  // Basso = buono
+          maxValue: 5,  // Backend: 0-5 scale
+          invert: true  // Basso = buono (pori poco visibili)
         }
       ];
       
@@ -316,20 +320,23 @@
         const data = visualAnalysis[m.key];
         if (!data) return '';
         
-        let value = m.getValue(data);
+        let rawValue = m.getValue(data);
         
-        // Normalizza se necessario
-        if (m.scale) {
-          value = Math.min(100, value * m.scale);
-        }
+        // STEP 1: Normalizza a 0-100
+        let normalizedValue = (rawValue / m.maxValue) * 100;
+        normalizedValue = Math.min(100, Math.max(0, normalizedValue));
         
-        // Inverti per metriche dove basso = buono
-        const displayValue = Math.round(m.invert ? 100 - value : value);
-        const color = getScoreColor(displayValue);
+        // STEP 2: Se invert=true, inverti (perché basso raw = buono)
+        // Esempio: wrinkles severity=2 → normalized=40% → inverted=60% (buono)
+        let healthScore = m.invert ? (100 - normalizedValue) : normalizedValue;
+        healthScore = Math.round(healthScore);
+        
+        // STEP 3: Colore basato su health score (alto = verde, basso = rosso)
+        const color = getScoreColor(healthScore);
         
         return `
           <div class="metric">
-            <div class="metric-circle" style="background: ${color};">${displayValue}%</div>
+            <div class="metric-circle" style="background: ${color};">${healthScore}%</div>
             <div class="metric-label">${m.label}</div>
           </div>
         `;

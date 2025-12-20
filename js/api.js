@@ -353,6 +353,42 @@ class SkinAIAPI {
       throw error;
     }
   }
+
+  async completeProfile(profileData) {
+    try {
+      console.log('[SkinAI] Completing user profile...', profileData);
+      const response = await fetch(`${this.baseURL}/api/user/complete-profile`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify(profileData)
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to complete profile');
+      }
+      
+      const result = await response.json();
+      console.log('[SkinAI] Profile completed:', result);
+      
+      // Aggiorna user in localStorage
+      const user = this.getCurrentUser();
+      if (user) {
+        user.first_name = profileData.first_name;
+        user.last_name = profileData.last_name;
+        user.birth_date = profileData.birth_date;
+        user.phone = profileData.phone;
+        user.profile_completed = true;
+        localStorage.setItem('skinai_user', JSON.stringify(user));
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('[SkinAI] Complete profile error:', error);
+      throw error;
+    }
+  }
+
   
   async updateUserProfile(profileData) {
     try {

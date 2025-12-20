@@ -375,14 +375,16 @@
           
           <!-- Età -->
           <div class="question-group">
-            <div class="question-label">Qual è la tua fascia d'età? <button class="help-btn" onclick="showHelp('eta')">?</button></div>
-            <div class="pill-options">
-              <div class="pill-option"><input type="radio" name="age_range" id="age1" value="under18"><label for="age1">Sotto i 18</label></div>
-              <div class="pill-option"><input type="radio" name="age_range" id="age2" value="18-25"><label for="age2">18-25</label></div>
-              <div class="pill-option"><input type="radio" name="age_range" id="age3" value="26-35"><label for="age3">26-35</label></div>
-              <div class="pill-option"><input type="radio" name="age_range" id="age4" value="36-45"><label for="age4">36-45</label></div>
-              <div class="pill-option"><input type="radio" name="age_range" id="age5" value="46-55"><label for="age5">46-55</label></div>
-              <div class="pill-option"><input type="radio" name="age_range" id="age6" value="over55"><label for="age6">Oltre 55</label></div>
+            <div class="question-label">La tua età <button class="help-btn" onclick="showHelp('eta')">?</button></div>
+            <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; border: 2px solid #e5d4c1;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="font-size: 3rem; font-weight: 700; color: #8b6f47;" id="age-display">--</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 1.2rem; color: #8b6f47; font-weight: 600;">anni</div>
+                  <div style="font-size: 0.9rem; color: #999; margin-top: 0.25rem;">Calcolata dalla tua data di nascita</div>
+                </div>
+              </div>
+              <input type="hidden" name="age_range" id="age_range_hidden" required>
             </div>
           </div>
           
@@ -750,5 +752,54 @@
     document.getElementById('help-modal').addEventListener('click', function(e) { if (e.target === this) closeHelp(); });
   </script>
   <script src="js/api.js"></script>
+
+  <script>
+    // Calcola e mostra età da data di nascita
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Carica profilo utente
+        const user = api.getCurrentUser();
+        if (!user || !user.birth_date) {
+          // Prova a caricare da API
+          try {
+            const profile = await api.getUserProfile();
+            if (profile && profile.birth_date) {
+              user.birth_date = profile.birth_date;
+            }
+          } catch (e) {
+            console.error('[SkinAI] Errore caricamento profilo:', e);
+          }
+        }
+
+        if (user && user.birth_date) {
+          const birthDate = new Date(user.birth_date);
+          const today = new Date();
+          const age = Math.floor((today - birthDate) / 31557600000); // millisecondi in un anno
+
+          // Mostra età
+          document.getElementById('age-display').textContent = age;
+
+          // Calcola fascia d'età per backend
+          let ageRange;
+          if (age < 18) ageRange = 'under18';
+          else if (age <= 25) ageRange = '18-25';
+          else if (age <= 35) ageRange = '26-35';
+          else if (age <= 45) ageRange = '36-45';
+          else if (age <= 55) ageRange = '46-55';
+          else ageRange = 'over55';
+
+          document.getElementById('age_range_hidden').value = ageRange;
+          console.log('[SkinAI] Età calcolata:', age, 'Fascia:', ageRange);
+        } else {
+          console.warn('[SkinAI] Data di nascita non trovata');
+          document.getElementById('age-display').textContent = '?';
+          document.getElementById('age-display').nextElementSibling.querySelector('div').textContent = 'Data di nascita non disponibile';
+        }
+      } catch (error) {
+        console.error('[SkinAI] Errore calcolo età:', error);
+      }
+    });
+  </script>
+
 </body>
 </html>

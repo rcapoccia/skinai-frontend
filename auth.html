@@ -196,7 +196,13 @@
       
       try {
         await api.login(email, password);
-        window.location.href = 'dashboard.html';
+        // Check se profilo è completo
+        const user = api.getCurrentUser();
+        if (!user.profile_completed && !user.birth_date) {
+          window.location.href = 'completa-profilo.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
       } catch (error) {
         alert('Errore login: ' + error.message);
         btn.disabled = false;
@@ -217,7 +223,8 @@
       
       try {
         await api.register(email, password, name);
-        window.location.href = 'dashboard.html';
+        // Redirect a completa profilo invece di dashboard
+        window.location.href = 'completa-profilo.html';
       } catch (error) {
         alert('Errore registrazione: ' + error.message);
         btn.disabled = false;
