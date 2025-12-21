@@ -378,7 +378,7 @@
             <div class="question-label">La tua età <button class="help-btn" onclick="showHelp('eta')">?</button></div>
             <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; border: 2px solid #e5d4c1;">
               <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="font-size: 3rem; font-weight: 700; color: #8b6f47;" id="age-display">--</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #8b6f47;" id="age-display">--</div>
                 <div style="flex: 1;">
                   <div style="font-size: 1.2rem; color: #8b6f47; font-weight: 600;">anni</div>
                   <div style="font-size: 0.9rem; color: #999; margin-top: 0.25rem;">Calcolata dalla tua data di nascita</div>
@@ -622,13 +622,11 @@
       let errors = [];
       
       if (sectionNum === 1) {
-        const ageRange = document.querySelector('input[name="age_range"]:checked');
         const hasAllergies = document.querySelector('input[name="has_allergies"]:checked');
         const skinBehavior = document.querySelector('input[name="skin_behavior"]:checked');
         const morningSkin = document.querySelector('input[name="morning_skin"]:checked');
         const afterCleansing = document.querySelector('input[name="after_cleansing"]:checked');
         
-        if (!ageRange) errors.push('Fascia d\'età');
         if (!hasAllergies) errors.push('Allergie o intolleranze');
         if (!skinBehavior) errors.push('Come si comporta la tua pelle durante il giorno');
         if (!morningSkin) errors.push('Come è la tua pelle al mattino');
@@ -689,7 +687,7 @@
     }
     function collectFormData() {
       return {
-        age_range: document.querySelector('input[name="age_range"]:checked')?.value || '',
+        age_range: document.getElementById('age_range_hidden')?.value || '',
         has_allergies: document.querySelector('input[name="has_allergies"]:checked')?.value || 'no',
         allergies: Array.from(document.querySelectorAll('input[name="allergies"]:checked')).map(el => el.value),
         other_allergies: document.getElementById('other_allergies')?.value || '',
