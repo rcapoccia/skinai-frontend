@@ -226,7 +226,7 @@
 <body>
   <!-- Header -->
   <header class="report-header">
-    <a href="dashboard.html">
+    <a href='/dashboard'>
       <img src="images/logo.png" alt="SkinAI" style="height: 50px; margin-bottom: 1rem;">
     </a>
     <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Il Tuo Report Personalizzato</h1>
@@ -602,6 +602,43 @@
           </div>
         `;
         return;
+      }
+      
+      
+      // ADATTATORE DATI: Trasforma risposta backend in formato frontend
+      if (analysis && analysis.coefficients) {
+        console.log('[SkinAI DEBUG] Adatto dati backend per frontend...');
+        
+        // Crea visual_analysis dal coefficients
+        analysis.visual_analysis = {
+          wrinkles: {
+            severity: Math.round(analysis.coefficients.wrinkles / 20), // 0-100 → 0-5
+            description: analysis.coefficients.wrinkles < 30 ? 'basse' : analysis.coefficients.wrinkles < 60 ? 'moderate' : 'evidenti'
+          },
+          spots: {
+            count: Math.round(analysis.coefficients.spots / 3.33), // 0-100 → 0-30
+            description: analysis.coefficients.spots < 30 ? 'poche' : analysis.coefficients.spots < 60 ? 'moderate' : 'molte'
+          },
+          redness: {
+            level: Math.round(analysis.coefficients.acne / 20), // 0-100 → 0-5
+            description: analysis.coefficients.acne < 30 ? 'basso' : analysis.coefficients.acne < 60 ? 'moderato' : 'elevato'
+          },
+          texture: {
+            score: 100 - analysis.coefficients.texture, // Inverti: alto texture backend = irregolare
+            description: analysis.coefficients.texture < 30 ? 'liscia' : analysis.coefficients.texture < 60 ? 'moderata' : 'irregolare'
+          },
+          pores: {
+            visibility: Math.round(analysis.coefficients.pores / 20), // 0-100 → 0-5
+            description: analysis.coefficients.pores < 30 ? 'poco visibili' : analysis.coefficients.pores < 60 ? 'moderati' : 'molto visibili'
+          }
+        };
+        
+        // Rinomina report → ai_recommendations
+        if (analysis.report) {
+          analysis.ai_recommendations = analysis.report;
+        }
+        
+        console.log('[SkinAI DEBUG] Dati adattati:', analysis);
       }
       
       contentDiv.innerHTML = renderReport(analysis);
