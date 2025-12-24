@@ -331,8 +331,8 @@
 </head>
 <body>
   <header class="header">
-    <a href="index.html"><img src="images/logo.png" alt="SkinAI" class="logo"></a>
-    <a href="dashboard.html" class="back-link">
+    <a href='/'><img src="images/logo.png" alt="SkinAI" class="logo"></a>
+    <a class='back-link' href='/dashboard'>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Dashboard
     </a>
@@ -753,7 +753,113 @@
 
   <script>
     // Calcola e mostra età da data di nascita
+    // Carica questionario esistente e pre-compila i campi
+    async function loadExistingQuestionnaire() {
+      try {
+        console.log('[SkinAI] Caricamento questionario esistente...');
+        const response = await fetch('https://164-90-171-42.nip.io/questionnaires/me', {
+          headers: {
+            'Authorization': `Bearer ${api.token}`
+          }
+        });
+        
+        if (!response.ok) {
+          console.log('[SkinAI] Nessun questionario esistente');
+          return;
+        }
+        
+        const data = await response.json();
+        console.log('[SkinAI] Questionario caricato:', data);
+        
+        // Pre-compila campi
+        if (data.skin_type_primary) {
+          const skinTypeRadio = document.querySelector(`input[name="skin_type"][value="${data.skin_type_primary}"]`);
+          if (skinTypeRadio) skinTypeRadio.checked = true;
+        }
+        
+        if (data.gender) {
+          const genderRadio = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
+          if (genderRadio) genderRadio.checked = true;
+        }
+        
+        if (data.city) {
+          const cityInput = document.querySelector('input[name="city"]');
+          if (cityInput) cityInput.value = data.city;
+        }
+        
+        if (data.country) {
+          const countryInput = document.querySelector('input[name="country"]');
+          if (countryInput) countryInput.value = data.country;
+        }
+        
+        if (data.season) {
+          const seasonRadio = document.querySelector(`input[name="season"][value="${data.season}"]`);
+          if (seasonRadio) seasonRadio.checked = true;
+        }
+        
+        // Allergies
+        if (data.allergies_cosmetics !== undefined) {
+          const allergyRadio = document.querySelector(`input[name="allergies_cosmetics"][value="${data.allergies_cosmetics ? 'yes' : 'no'}"]`);
+          if (allergyRadio) allergyRadio.checked = true;
+        }
+        
+        // Skin behavior
+        if (data.skin_behavior) {
+          const behaviorRadio = document.querySelector(`input[name="skin_behavior"][value="${data.skin_behavior}"]`);
+          if (behaviorRadio) behaviorRadio.checked = true;
+        }
+        
+        // Morning skin
+        if (data.morning_skin) {
+          const morningRadio = document.querySelector(`input[name="morning_skin"][value="${data.morning_skin}"]`);
+          if (morningRadio) morningRadio.checked = true;
+        }
+        
+        // Cleansing reaction
+        if (data.cleansing_reaction) {
+          const cleansingRadio = document.querySelector(`input[name="cleansing_reaction"][value="${data.cleansing_reaction}"]`);
+          if (cleansingRadio) cleansingRadio.checked = true;
+        }
+        
+        // Makeup answers (JSON)
+        if (data.makeup_answers) {
+          if (data.makeup_answers.usage) {
+            const makeupRadio = document.querySelector(`input[name="makeup_usage"][value="${data.makeup_answers.usage}"]`);
+            if (makeupRadio) makeupRadio.checked = true;
+          }
+          if (data.makeup_answers.frequency) {
+            const freqRadio = document.querySelector(`input[name="makeup_frequency"][value="${data.makeup_answers.frequency}"]`);
+            if (freqRadio) freqRadio.checked = true;
+          }
+          if (data.makeup_answers.products && Array.isArray(data.makeup_answers.products)) {
+            data.makeup_answers.products.forEach(product => {
+              const checkbox = document.querySelector(`input[name="makeup_products"][value="${product}"]`);
+              if (checkbox) checkbox.checked = true;
+            });
+          }
+          if (data.makeup_answers.removal_method) {
+            const removalRadio = document.querySelector(`input[name="makeup_removal"][value="${data.makeup_answers.removal_method}"]`);
+            if (removalRadio) removalRadio.checked = true;
+          }
+        }
+        
+        // Cambia testo pulsante
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.textContent = 'Aggiorna Questionario';
+        }
+        
+        console.log('[SkinAI] Questionario pre-compilato');
+        
+      } catch (error) {
+        console.error('[SkinAI] Errore caricamento questionario:', error);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
+      // Carica questionario esistente
+      await loadExistingQuestionnaire();
+
       try {
         // Carica profilo utente
         const user = api.getCurrentUser();
