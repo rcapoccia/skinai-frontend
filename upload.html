@@ -227,7 +227,7 @@
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               <div class="upload-label">Foto Frontale</div>
-              <div class="upload-hint">Clicca per caricare</div>
+              <div class="upload-hint">Scatta o carica foto</div>
             </div>
             <img class="upload-preview" id="preview-front" alt="Preview frontale">
             <button class="remove-btn" onclick="removeImage(event, 'front')">
@@ -235,7 +235,7 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <input type="file" id="file-front" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'front')">
+            <input type="file" id="file-front" accept="image/*" capture="user" style="display: none;" onchange="handleFileSelect(event, 'front')">
           </div>
           
           <!-- Laterale Sinistra -->
@@ -245,7 +245,7 @@
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               <div class="upload-label">Laterale Sinistra</div>
-              <div class="upload-hint">Clicca per caricare</div>
+              <div class="upload-hint">Scatta o carica foto</div>
             </div>
             <img class="upload-preview" id="preview-left" alt="Preview sinistra">
             <button class="remove-btn" onclick="removeImage(event, 'left')">
@@ -253,7 +253,7 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <input type="file" id="file-left" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'left')">
+            <input type="file" id="file-left" accept="image/*" capture="user" style="display: none;" onchange="handleFileSelect(event, 'left')">
           </div>
           
           <!-- Laterale Destra -->
@@ -263,7 +263,7 @@
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               <div class="upload-label">Laterale Destra</div>
-              <div class="upload-hint">Clicca per caricare</div>
+              <div class="upload-hint">Scatta o carica foto</div>
             </div>
             <img class="upload-preview" id="preview-right" alt="Preview destra">
             <button class="remove-btn" onclick="removeImage(event, 'right')">
@@ -271,7 +271,7 @@
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <input type="file" id="file-right" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'right')">
+            <input type="file" id="file-right" accept="image/*" capture="user" style="display: none;" onchange="handleFileSelect(event, 'right')">
           </div>
         </div>
         
