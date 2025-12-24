@@ -633,8 +633,60 @@
           }
         };
         
-        // Rinomina report → ai_recommendations
-        if (analysis.report) {
+        // Usa analisi completa se disponibile
+        if (analysis.analysis) {
+          // Routine skincare
+          if (analysis.analysis.recommendations) {
+            analysis.routine_mattina = analysis.analysis.recommendations.morning_routine || [];
+            analysis.routine_sera = analysis.analysis.recommendations.evening_routine || [];
+            analysis.prodotti_consigliati = analysis.analysis.recommendations.key_ingredients || [];
+          }
+          
+          // Armocromia
+          if (analysis.analysis.color_analysis) {
+            const colorMap = {
+              'warm': 'Autunno Caldo',
+              'cool': 'Inverno Freddo',
+              'neutral': 'Primavera Neutrale'
+            };
+            
+            analysis.armocromia = {
+              stagione: colorMap[analysis.analysis.color_analysis.undertone] || 'Neutrale',
+              descrizione: `Sottotono ${analysis.analysis.color_analysis.undertone}. I colori che valorizzano il tuo incarnato sono quelli caldi e luminosi.`,
+              palette: (analysis.analysis.color_analysis.best_colors || []).map(color => ({
+                nome: color,
+                colore: color,
+                tipo: 'consigliato'
+              }))
+            };
+          }
+          
+          // Genera report markdown da analisi dettagliata
+          let reportText = '## Analisi Dettagliata\n\n';
+          
+          if (analysis.analysis.wrinkles) {
+            reportText += `**Rughe**: ${analysis.analysis.wrinkles.reasoning}\n\n`;
+          }
+          
+          if (analysis.analysis.spots) {
+            reportText += `**Macchie**: ${analysis.analysis.spots.reasoning}\n\n`;
+          }
+          
+          if (analysis.analysis.acne) {
+            reportText += `**Acne**: ${analysis.analysis.acne.reasoning}\n\n`;
+          }
+          
+          if (analysis.analysis.hydration) {
+            reportText += `**Idratazione**: ${analysis.analysis.hydration.description}\n\n`;
+          }
+          
+          if (analysis.analysis.redness) {
+            reportText += `**Rossore**: ${analysis.analysis.redness.description}\n\n`;
+          }
+          
+          analysis.ai_recommendations = reportText;
+        } else if (analysis.report) {
+          // Fallback: usa report se analysis non disponibile
           analysis.ai_recommendations = analysis.report;
         }
         
