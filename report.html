@@ -638,10 +638,23 @@
         
         // Usa analisi completa se disponibile
         if (analysis.analysis) {
-          // Routine skincare
+          // Routine skincare - trasforma array di stringhe in oggetti
           if (analysis.analysis.recommendations) {
-            analysis.routine_mattina = analysis.analysis.recommendations.morning_routine || [];
-            analysis.routine_sera = analysis.analysis.recommendations.evening_routine || [];
+            const morningRoutine = analysis.analysis.recommendations.morning_routine || [];
+            const eveningRoutine = analysis.analysis.recommendations.evening_routine || [];
+            
+            analysis.routine_mattina = morningRoutine.map(item => ({
+              nome: item,
+              descrizione: '',
+              prodotti: []
+            }));
+            
+            analysis.routine_sera = eveningRoutine.map(item => ({
+              nome: item,
+              descrizione: '',
+              prodotti: []
+            }));
+            
             analysis.prodotti_consigliati = analysis.analysis.recommendations.key_ingredients || [];
           }
           
@@ -653,41 +666,57 @@
               'neutral': 'Primavera Neutrale'
             };
             
+            // Mappa colori inglesi a hex
+            const colorToHex = {
+              'red': '#DC2626',
+              'orange': '#EA580C',
+              'yellow': '#EAB308',
+              'gold': '#D97706',
+              'warm brown': '#92400E',
+              'olive': '#65A30D',
+              'blue': '#2563EB',
+              'purple': '#9333EA',
+              'pink': '#EC4899',
+              'silver': '#94A3B8',
+              'black': '#1F2937',
+              'white': '#F9FAFB'
+            };
+            
             analysis.armocromia = {
               stagione: colorMap[analysis.analysis.color_analysis.undertone] || 'Neutrale',
               descrizione: `Sottotono ${analysis.analysis.color_analysis.undertone}. I colori che valorizzano il tuo incarnato sono quelli caldi e luminosi.`,
               palette: (analysis.analysis.color_analysis.best_colors || []).map(color => ({
-                nome: color,
-                colore: color,
+                nome: color.charAt(0).toUpperCase() + color.slice(1),
+                colore: colorToHex[color.toLowerCase()] || color,
                 tipo: 'consigliato'
               }))
             };
           }
           
-          // Genera report markdown da analisi dettagliata
-          let reportText = '## Analisi Dettagliata\n\n';
+          // Genera report HTML da analisi dettagliata (non markdown)
+          let reportHtml = '<h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--dark);">Analisi Dettagliata</h3>';
           
           if (analysis.analysis.wrinkles) {
-            reportText += `**Rughe**: ${analysis.analysis.wrinkles.reasoning}\n\n`;
+            reportHtml += `<p style="margin-bottom: 1rem;"><strong>Rughe:</strong> ${analysis.analysis.wrinkles.reasoning}</p>`;
           }
           
           if (analysis.analysis.spots) {
-            reportText += `**Macchie**: ${analysis.analysis.spots.reasoning}\n\n`;
+            reportHtml += `<p style="margin-bottom: 1rem;"><strong>Macchie:</strong> ${analysis.analysis.spots.reasoning}</p>`;
           }
           
           if (analysis.analysis.acne) {
-            reportText += `**Acne**: ${analysis.analysis.acne.reasoning}\n\n`;
+            reportHtml += `<p style="margin-bottom: 1rem;"><strong>Acne:</strong> ${analysis.analysis.acne.reasoning}</p>`;
           }
           
           if (analysis.analysis.hydration) {
-            reportText += `**Idratazione**: ${analysis.analysis.hydration.description}\n\n`;
+            reportHtml += `<p style="margin-bottom: 1rem;"><strong>Idratazione:</strong> ${analysis.analysis.hydration.description}</p>`;
           }
           
           if (analysis.analysis.redness) {
-            reportText += `**Rossore**: ${analysis.analysis.redness.description}\n\n`;
+            reportHtml += `<p style="margin-bottom: 1rem;"><strong>Rossore:</strong> ${analysis.analysis.redness.description}</p>`;
           }
           
-          analysis.ai_recommendations = reportText;
+          analysis.ai_recommendations = reportHtml;
         } else if (analysis.report) {
           // Fallback: usa report se analysis non disponibile
           analysis.ai_recommendations = analysis.report;
