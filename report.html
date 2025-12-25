@@ -636,6 +636,30 @@
           }
         };
         
+        // MIGRAZIONE AUTOMATICA: Converte dati vecchi in nuovo formato
+        // Se routine_mattina esiste ed è array di stringhe, convertilo in array di oggetti
+        if (analysis.routine_mattina && Array.isArray(analysis.routine_mattina)) {
+          if (analysis.routine_mattina.length > 0 && typeof analysis.routine_mattina[0] === 'string') {
+            console.log('[SkinAI DEBUG] Migrazione dati vecchi: routine_mattina');
+            analysis.routine_mattina = analysis.routine_mattina.map(item => ({
+              nome: item,
+              descrizione: '',
+              prodotti: []
+            }));
+          }
+        }
+        
+        if (analysis.routine_sera && Array.isArray(analysis.routine_sera)) {
+          if (analysis.routine_sera.length > 0 && typeof analysis.routine_sera[0] === 'string') {
+            console.log('[SkinAI DEBUG] Migrazione dati vecchi: routine_sera');
+            analysis.routine_sera = analysis.routine_sera.map(item => ({
+              nome: item,
+              descrizione: '',
+              prodotti: []
+            }));
+          }
+        }
+        
         // Usa analisi completa se disponibile
         if (analysis.analysis) {
           // Routine skincare - trasforma array di stringhe in oggetti
